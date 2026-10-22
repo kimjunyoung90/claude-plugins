@@ -18,9 +18,11 @@
 
 ## 설치
 
+개인 마켓플레이스 [kimjunyoung90/claude-plugins](https://github.com/kimjunyoung90/claude-plugins)로 배포합니다.
+
 ```
-/plugin marketplace add kimjunyoung90/study-kit
-/plugin install study-kit@study-kit-marketplace
+/plugin marketplace add kimjunyoung90/claude-plugins
+/plugin install study-kit@kimjunyoung90
 ```
 
 ## 경로 설정
