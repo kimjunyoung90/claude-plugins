@@ -10,8 +10,8 @@
     {
       "name": "study-kit",
       "source": "./plugins/study-kit",
-      "description": "손글씨 PDF 시험지 출제·채점·오답노트·간격 복습(test)과, 공부 중 질문을 학습 로그에 기록(study-log)하는 스킬 세트",
-      "version": "1.0.0"
+      "description": "손글씨 PDF 시험지 출제·채점·오답노트·간격 복습(test)과, 공부 중 질문을 학습 로그에 기록(study-log)하는 스킬 세트, 첫 설정(setup)",
+      "version": "1.1.0"
     }
   ]
 }
