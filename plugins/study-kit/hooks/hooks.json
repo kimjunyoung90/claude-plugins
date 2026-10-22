@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/skills/study-log/scripts/study-log-reminder.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
