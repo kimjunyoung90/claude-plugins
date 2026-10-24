@@ -1,0 +1,28 @@
+{
+    "name": "todo",
+    "version": "0.10.0",
+    "author": {
+        "name": "kimjunyoung90"
+    },
+    "description": "지라 기반 할 일 관리 — 할 일을 저장하고, 티켓·세션에 연결해 시작(/start)·완료(/finish)하며 한 일을 지라 티켓에 작업 내역으로 기록하고 티켓을 완료로 옮긴다. 맡긴 세션 상태는 /check 로 본다. /todo 화면 포함.",
+    "types": "./types/index.d.ts",
+    "userConfig": {
+        "jira_url": {
+            "type": "string",
+            "title": "지라 주소",
+            "description": "지라 접속 주소 (https://...)"
+        },
+        "jira_username": {
+            "type": "string",
+            "title": "지라 계정",
+            "description": "지라 로그인 계정(이메일 또는 사용자 이름)"
+        },
+        "jira_api_token": {
+            "type": "string",
+            "title": "지라 API 토큰",
+            "description": "지라 API 토큰. 키체인 같은 보안 저장소에 저장된다",
+            "sensitive": true
+        }
+    },
+    "hooks": "./hooks/hooks.json"
+}
