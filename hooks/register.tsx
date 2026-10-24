@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderSurface } from 'claude-code'
 
 import type { TodoItem, TodoSnapshot } from '../types'
-import { ageDays, ageLabel, ageTone, goalGroups, isoWeek, parseTodoFile, todayString } from './format'
+import { ageDays, ageTone, goalGroups, isoWeek, parseTodoFile, todayString } from './format'
 
 const PANE = 'todo'
 const REFRESH_MS = 60_000
@@ -160,7 +160,6 @@ export const register: Register = on => {
               {p.item.inProgress && (
                 <Text backgroundColor="claude" color="inverseText" bold>{' 작업 중 '}</Text>
               )}
-              <Text color={tone} bold={tone !== 'text'}>{ageLabel(days)}</Text>
             </Box>
           </Box>
           {p.item.jira && (
