@@ -120,8 +120,11 @@ export const register: Register = on => {
     const snap = await read($, snapshot)
     const picked = await read($, selected)
     const first = ordered(snap)[0]?.id
-    const stale = snap.items.filter(i => ageDays(i.created, snap.today) >= 7).length
-    const fresh = snap.items.filter(i => i.created.slice(0, 10) === snap.today).length
+    // 받은 지 며칠 — 줄마다 붙는 ● 색과 같은 기준(ageTone). 위쪽 개수가 그 색의 설명을 겸한다
+    const tones = snap.items.map(i => ageTone(ageDays(i.created, snap.today)))
+    const fresh = tones.filter(t => t === 'success').length
+    const aged = tones.filter(t => t === 'warning').length
+    const old = tones.filter(t => t === 'error').length
     const doing = snap.items.filter(i => i.inProgress).length
     const week = snap.week ?? isoWeek(snap.today)
     const goals = goalItems(snap.items, week)
@@ -139,10 +142,20 @@ export const register: Register = on => {
       </Text>
     )
 
+    // 줄 앞 ● 색의 설명 겸 개수 — ● <개수> <뜻>
+    const Dot = (p: { label: string; value: number; color: string }) => (
+      <Text>
+        <Text bold color={p.color}>●</Text>
+        <Text bold>{` ${p.value}`}</Text>
+        <Text dimColor> {p.label}</Text>
+      </Text>
+    )
+
     const Item = (p: { item: TodoItem }) => {
       const days = ageDays(p.item.created, snap.today)
       const tone = ageTone(days)
-      const isPicked = picked === p.item.id
+      // 고른 줄 표시는 키보드가 화면에 있을 때만 — Esc 등으로 입력창에 돌아가면 지운다
+      const isPicked = e.props.isFocused && picked === p.item.id
       return (
         // 고른 줄은 왼쪽 막대와 바탕색으로 두 줄(제목·티켓)을 한 덩어리로 드러낸다
         <Box key={p.item.id} flexDirection="column" marginBottom={1} backgroundColor={isPicked ? PICKED_BG : undefined}>
@@ -150,13 +163,13 @@ export const register: Register = on => {
             <Box flexDirection="row" gap={1} flexShrink={1}>
               <Text bold color="claude">{isPicked ? '▌' : ' '}</Text>
               <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
-              <Text color={tone} bold>{days >= 7 ? '●' : days === 0 ? '✦' : '○'}</Text>
+              {/* 받은 지 며칠은 기호 하나(●)의 색으로만 — 초록 오늘 · 기본 7일 미만 · 노랑 7일↑ · 빨강 14일↑ */}
+              <Text color={tone} bold>●</Text>
               {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다. Enter 는 그 할 일의 작업 세션으로 간다 */}
               <Button key={`${ROW}${p.item.id}`} plain label={p.item.title} autoFocus={p.item.id === first ? true : undefined}
                 onPress={press => void goTo($, p.item, press.surface)} />
             </Box>
             <Box flexDirection="row" gap={1} flexShrink={0}>
-              {p.item.goal !== null && p.item.goal < week && <Text dimColor>이월</Text>}
               {p.item.inProgress && (
                 <Text backgroundColor="claude" color="inverseText" bold>{' 작업 중 '}</Text>
               )}
@@ -176,17 +189,22 @@ export const register: Register = on => {
 
     return (
       <Box flexDirection="column" width={width} minHeight={rows}>
-        <Box flexDirection="row" gap={2} flexWrap="wrap">
-          {Stat({ label: '할 일', value: snap.items.length, color: 'claude' })}
-          {Stat({ label: '작업 중', value: doing, color: 'claude' })}
-          {Stat({ label: '오늘', value: fresh, color: 'success' })}
-          {Stat({ label: '7일↑', value: stale, color: stale > 0 ? 'error' : 'subtle' })}
+        <Box flexDirection="row" justifyContent="space-between" gap={2}>
+          <Box flexDirection="row" gap={2}>
+            {Stat({ label: '할 일', value: snap.items.length, color: 'claude' })}
+            {Stat({ label: '작업 중', value: doing, color: 'claude' })}
+          </Box>
+          <Box flexDirection="row" gap={2}>
+            {Dot({ label: '오늘', value: fresh, color: 'success' })}
+            {Dot({ label: '7일↑', value: aged, color: 'warning' })}
+            {old > 0 && Dot({ label: '14일↑', value: old, color: 'error' })}
+          </Box>
         </Box>
         <Text dimColor>{'─'.repeat(width)}</Text>
 
         {snap.items.length === 0 && !snap.error && <Text color="success">할 일이 없습니다.</Text>}
 
-        {/* 이번 주 목표는 이름 없이 한 묶음. 지난 주 목표인데 안 끝난 건(이월)도 여기 두고 「이월」을 붙인다 */}
+        {/* 이번 주 목표는 이름 없이 한 묶음. 지난 주 목표인데 안 끝난 건(이월)도 따로 표시 없이 여기 둔다 */}
         {goals.length > 0 && (
           <Box flexDirection="column" marginTop={1}>
             <Text bold color="warning">★ 이번 주 목표</Text>
@@ -202,11 +220,14 @@ export const register: Register = on => {
 
         <Box flexGrow={1} />
         <Text dimColor>{'─'.repeat(width)}</Text>
-        <Text dimColor wrap="truncate-end">
-          {snap.error
-            ? `갱신 실패: ${snap.error}`
-            : `↑↓ 이동 · Enter 세션으로 · Esc 입력창 · ✦ 오늘 ○ 7일 미만 ● 7일↑ ★ 목표 · 갱신 ${snap.updatedAt}`}
-        </Text>
+        {snap.error ? (
+          <Text dimColor wrap="truncate-end">{`갱신 실패: ${snap.error}`}</Text>
+        ) : (
+          <Box flexDirection="row" justifyContent="space-between" gap={1}>
+            <Text dimColor wrap="truncate-end">↑↓ 이동 · Esc 입력창</Text>
+            <Text dimColor>{`LastUpdated ${snap.updatedAt}`}</Text>
+          </Box>
+        )}
       </Box>
     )
   })
