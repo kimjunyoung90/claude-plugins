@@ -163,7 +163,7 @@ export const register: Register = on => {
             <Box flexDirection="row" gap={1} flexShrink={1}>
               <Text bold color="claude">{isPicked ? '▌' : ' '}</Text>
               <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
-              {/* 받은 지 며칠은 기호 하나(●)의 색으로만 — 초록 오늘 · 기본 7일 미만 · 노랑 7일↑ · 빨강 14일↑ */}
+              {/* 받은 지 며칠은 기호 하나(●)의 색으로만 — 초록 오늘 · 기본 3일 미만 · 노랑 3일↑ · 빨강 7일↑ */}
               <Text color={tone} bold>●</Text>
               {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다. Enter 는 그 할 일의 작업 세션으로 간다 */}
               <Button key={`${ROW}${p.item.id}`} plain label={p.item.title} autoFocus={p.item.id === first ? true : undefined}
@@ -196,8 +196,8 @@ export const register: Register = on => {
           </Box>
           <Box flexDirection="row" gap={2}>
             {Dot({ label: '오늘', value: fresh, color: 'success' })}
-            {Dot({ label: '7일↑', value: aged, color: 'warning' })}
-            {old > 0 && Dot({ label: '14일↑', value: old, color: 'error' })}
+            {Dot({ label: '3일↑', value: aged, color: 'warning' })}
+            {old > 0 && Dot({ label: '7일↑', value: old, color: 'error' })}
           </Box>
         </Box>
         <Text dimColor>{'─'.repeat(width)}</Text>

@@ -62,9 +62,10 @@ export function ageDays(created: string, today: string): number {
 }
 
 export function ageTone(days: number): AgeTone {
+  // 한 주(목표 주기)를 넘기면 빨강, 사흘을 넘기면 노랑
   if (days === 0) return 'success'
-  if (days >= 14) return 'error'
-  if (days >= 7) return 'warning'
+  if (days >= 7) return 'error'
+  if (days >= 3) return 'warning'
   return 'text'
 }
 
