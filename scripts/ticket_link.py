@@ -8,7 +8,7 @@
 티켓이 지라에 실제로 있는지는 확인하지 않는다 — 티켓은 할 일을 추가할 때(/todo:add) 이미 만들어져 있다.
 
 연결 파일은 jira/state/<세션>.json 이고 완료 뒤에도 지우지 않는다(기록으로 남긴다).
-worklog-update.py · work-extract.py · check.py 가 여기 함수로 티켓의 세션과 세션 기록을 찾는다.
+launch.py 가 띄운 작업 세션이 첫 지시대로 bind 한다. worklog-update.py · work-extract.py · check.py 가 여기 함수로 티켓의 세션과 세션 기록을 찾는다.
 """
 from __future__ import annotations
 

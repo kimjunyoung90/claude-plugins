@@ -40,11 +40,6 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-body); f
   display: grid; gap: 28px;
 }
 h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
-.todo-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 22px; display: grid; gap: 16px; }
-.todo-card h3 { margin: 0 0 6px; font-size: 15.5px; }
-.todo-card ol { margin: 0; padding-left: 20px; display: grid; gap: 5px; font-size: 14px; }
-.todo-card li::marker { color: var(--accent); font-weight: 700; }
-.todo-card code { font-family: var(--font-mono); font-size: 12.5px; background: var(--off-soft); padding: 0 4px; border-radius: 4px; }
 h2 { margin: 0 0 -16px; font-size: 19px; font-weight: 700; }
 .cap { margin: 4px 6px 10px; font-size: 14.5px; color: var(--muted); }
 .tools { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13.5px; }
@@ -239,16 +234,6 @@ svg .num-t { fill: var(--surface); font-size: 12px; font-weight: 700; }
       <text x="562" y="339" text-anchor="middle" class="pill-t"><tspan>done</tspan></text>
 
     </svg>
-  </div>
-
-  <h2>개선할 부분</h2>
-  <div class="todo-card">
-    <div>
-      <ol>
-        <li>Orca 없는 환경을 지원한다. 지금은 <code>/start</code> 가 <code>orca worktree create</code> 로 세션을 열고, <code>/check</code> 가 <code>orca worktree ps --json</code> 으로 상태를 읽는다.</li>
-        <li>세션 기록 보관 기간(<code>cleanupPeriodDays</code>, 기본 30일)을 늘린다. 작업 내역으로 기록하기 전에 지워지면 <code>/finish</code> 가 정리할 재료가 사라진다.</li>
-      </ol>
-    </div>
   </div>
 
 </div>

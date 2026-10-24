@@ -10,12 +10,11 @@
 from __future__ import annotations
 
 import argparse
-import json
 import sys
-from datetime import date, datetime
-from pathlib import Path
+from datetime import date
 
 from ticket_link import find_transcript, sessions_for  # 같은 scripts/ 폴더
+from transcript import turns
 
 MAX_PROMPT = 1000   # 붙여넣은 긴 글이 재료를 덮지 않게 자른다
 MAX_ANSWER = 2000
@@ -24,55 +23,6 @@ MAX_ANSWER = 2000
 def clip(text: str, limit: int) -> str:
     text = text.strip()
     return text if len(text) <= limit else text[:limit] + " …(생략)"
-
-
-def local_day(ts: str) -> tuple[str, str]:
-    """UTC ISO 시각 → (로컬 날짜, HH:MM)"""
-    t = datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone()
-    return t.date().isoformat(), t.strftime("%H:%M")
-
-
-def prompt_text(rec: dict) -> str | None:
-    """사람이 직접 입력한 요청만. 도구 결과·훅·시스템 안내(<...>)·압축 요약은 None."""
-    if rec.get("isMeta") or rec.get("isSidechain") or rec.get("isCompactSummary"):
-        return None
-    content = (rec.get("message") or {}).get("content")
-    if isinstance(content, str):
-        parts = [content]
-    elif isinstance(content, list):
-        parts = [b.get("text", "") for b in content if b.get("type") == "text"]
-    else:
-        return None
-    parts = [p for p in parts if p.strip() and not p.lstrip().startswith(("<", "[Request interrupted"))]
-    return "\n".join(parts) if parts else None
-
-
-def answer_text(rec: dict) -> str | None:
-    if rec.get("isSidechain"):
-        return None
-    content = (rec.get("message") or {}).get("content") or []
-    texts = [b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text"]
-    text = "\n".join(t for t in texts if t.strip())
-    return text or None
-
-
-def turns(transcript: Path) -> list[dict]:
-    """요청 하나와 그 요청에 대한 마지막 답변을 한 묶음으로."""
-    out: list[dict] = []
-    for line in transcript.open(encoding="utf-8"):
-        try:
-            rec = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        ts = rec.get("timestamp")
-        if not ts:
-            continue
-        if rec.get("type") == "user" and (text := prompt_text(rec)):
-            day, hm = local_day(ts)
-            out.append({"day": day, "time": hm, "prompt": text, "answer": None})
-        elif rec.get("type") == "assistant" and out and (text := answer_text(rec)):
-            out[-1]["answer"] = text   # 뒤에 오는 답변이 앞의 것을 덮는다 = 마지막 답변만 남는다
-    return out
 
 
 def main(argv: list[str]) -> int:
