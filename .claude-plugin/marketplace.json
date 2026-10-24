@@ -15,6 +15,15 @@
       },
       "description": "손글씨 PDF 시험지 출제·채점·오답노트·간격 복습(test)과, 공부 중 질문을 학습 로그에 기록(study-log)하는 스킬 세트, 첫 설정(setup)",
       "version": "1.1.0"
+    },
+    {
+      "name": "todo",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/kimjunyoung90/todo.git"
+      },
+      "description": "지라 기반 할 일 관리 — 할 일 추가·이번 주 목표·작업 세션 시작·진행 확인·완료와, 세션 기록을 지라 티켓에 작업 내역으로 기록",
+      "version": "0.10.0"
     }
   ]
 }
