@@ -6,8 +6,8 @@
     todo.py set <ref> <상태> [--jira <KEY>] [--title ..] [--note ..] [--dry-run] [--no-jira]
                                              ref 는 번호 · 할 일 id(T-NNNN) · 티켓 키
                                              in_progress·done 으로 바꾸면 지라 티켓도 진행 중·완료로 옮긴다
-    todo.py goal                             목표 (이번 ISO 주 + 끝나지 않은 지난 목표는 이월)
-    todo.py goal <ref> ... --name "<목표 이름>" [--week YYYY-Www]   목표로 묶기
+    todo.py goal                             이번 주 목표 (이번 ISO 주 + 끝나지 않은 지난 목표는 이월)
+    todo.py goal <ref> ... [--week YYYY-Www] 이번 주 목표로 표시
     todo.py goal --clear <ref> ...           목표 표시 해제
 """
 from __future__ import annotations
@@ -34,10 +34,9 @@ TODO_FILE = TODO_DATA_DIR / "todo.jsonl"
 #   note       문자열 · null          기한·배경 같은 메모
 #   done_at    YYYY-MM-DD · null      완료한 날
 #   goal       YYYY-Www · null        목표로 정한 ISO 주. 참/거짓이 아니라 주라서, 주가 바뀌면 저절로 이월로 갈린다
-#   goal_name  문자열 · null          목표 이름. 같은 주·같은 이름인 할 일이 한 묶음
 # 번호는 state 가 todo·in_progress 인 건을 created 오름차순으로 센 순서다 — 화면(hooks/format.ts)도 같은 기준.
 # 형식을 바꿀 때는 이 파일(쓰기)과 hooks/format.ts · types/index.d.ts(읽기)를 같이 고친다.
-FIELDS = ("id", "created", "title", "state", "jira", "note", "done_at", "goal", "goal_name")
+FIELDS = ("id", "created", "title", "state", "jira", "note", "done_at", "goal")
 # todo(할 일) → in_progress(작업 중) → done(완료)
 STATES = ("todo", "in_progress", "done")
 ACTIVE = ("todo", "in_progress")            # 할 일 목록 — 화면과 같은 범위
@@ -83,7 +82,7 @@ def new_todo(records: list[dict], *, title: str, jira: str | None = None, note: 
     """새 할 일 한 건. records 는 바꾸지 않는다 — 저장은 부르는 쪽이 한다."""
     return {
         "id": next_id(records), "created": datetime.now().strftime("%Y-%m-%dT%H:%M"), "title": title,
-        "state": "todo", "jira": jira, "note": note, "done_at": None, "goal": None, "goal_name": None,
+        "state": "todo", "jira": jira, "note": note, "done_at": None, "goal": None,
     }
 
 
@@ -186,21 +185,17 @@ def check_week(week: str) -> None:
         raise SystemExit(f"주는 YYYY-Www 꼴의 실제 있는 ISO 주로 씁니다: {week}")
 
 
-# 목표는 할 일의 칸(goal·goal_name)이다 — 목표 파일을 따로 두지 않는다.
+# 목표는 할 일의 칸(goal)이다 — 목표 파일을 따로 두지 않는다. 이번 주 목표는 이름 없이 한 묶음이다.
 # 주 계산은 이 파일(date.isocalendar())과 화면(format.ts isoWeek())이 같은 값을 낸다.
 def is_goal(rec: dict, week: str) -> bool:
     """이번 주 목표이거나 이월 — 화면 ★ 와 같은 기준. 미래 주 목표는 아직 아니다."""
     return bool(rec.get("goal")) and rec["goal"] <= week
 
 
-def goal_groups(records: list[dict], week: str) -> list[tuple[str, str | None, list[dict]]]:
-    """목표별 묶음 [(목표 이름, 이월이면 원래 주, 할 일들)] — 끝나지 않은 할 일만, 목록 번호 순.
-    이월은 지난 주에 목표였는데 아직 안 끝난 건. 미래 주 목표는 아직 넣지 않는다."""
-    groups: dict[tuple[str, str], list[dict]] = {}
-    for rec in active_rows(records):
-        if is_goal(rec, week):
-            groups.setdefault((rec["goal_name"], rec["goal"]), []).append(rec)
-    return [(name, None if wk == week else wk, rows) for (name, wk), rows in groups.items()]
+def goal_rows(records: list[dict], week: str) -> list[dict]:
+    """이번 주 목표인 할 일 — 끝나지 않은 할 일만, 목록 번호 순.
+    이월(지난 주에 목표였는데 아직 안 끝난 건)도 넣는다. 미래 주 목표는 아직 넣지 않는다."""
+    return [rec for rec in active_rows(records) if is_goal(rec, week)]
 
 
 def row_lines(n: int, rec: dict, today: str) -> tuple[str, str]:
@@ -213,11 +208,12 @@ def row_lines(n: int, rec: dict, today: str) -> tuple[str, str]:
     return (f"{n:>2}. {doing}{rec['title']}{jira}{new}", f"    {md} 접수 · {rec['id']}{note}")
 
 
-def print_groups(groups, numbers: dict[str, int], today: str) -> None:
-    for name, carried, rows in groups:
-        print(f"★ {name}" + (f" (이월 {carried})" if carried else ""))
-        for rec in rows:
-            print("\n".join(row_lines(numbers[rec["id"]], rec, today)))
+def print_goals(rows: list[dict], numbers: dict[str, int], today: str, week: str) -> None:
+    print("★ 이번 주 목표")
+    for rec in rows:
+        first, second = row_lines(numbers[rec["id"]], rec, today)
+        carried = f" (이월 {rec['goal']})" if rec["goal"] != week else ""
+        print(f"{first}{carried}\n{second}")
 
 
 def cmd_goal(args) -> None:
@@ -228,27 +224,26 @@ def cmd_goal(args) -> None:
     records = load()
     refs = args.clear if args.clear is not None else args.refs
     if refs:
-        if args.clear is None and not args.name:
-            raise SystemExit("목표 이름이 필요합니다 — --name \"<목표 이름>\"")
         # 번호는 바꾸기 전 목록 기준이므로 먼저 전부 id 로 바꾼다
         targets = [find(records, ref) for ref in refs]
         closed = [r for r in targets if r["state"] not in ACTIVE] if args.clear is None else []
         if closed:
             raise SystemExit("끝난 할 일은 목표로 정할 수 없습니다: " + ", ".join(r["id"] for r in closed))
         ids = [r["id"] for r in targets]
-        change = {"goal": None, "goal_name": None} if args.clear is not None else {"goal": week, "goal_name": args.name}
+        change = {"goal": None} if args.clear is not None else {"goal": week}
         save([{**r, **change} if r["id"] in ids else r for r in records])
         for rec in targets:
-            print(f"{rec['id']}  {'목표 해제' if change['goal'] is None else f'★ {args.name} ({week})'}  {rec['title']}")
+            print(f"{rec['id']}  {'목표 해제' if change['goal'] is None else f'★ 이번 주 목표 ({week})'}  {rec['title']}")
         return
-    groups = goal_groups(records, week)
+    goals = goal_rows(records, week)
     numbers = {r["id"]: n for n, r in enumerate(active_rows(records), 1)}
-    print(f"■ 목표 ({week}) {len(groups)}개")
-    print_groups(groups, numbers, date.today().isoformat())
+    print(f"■ 이번 주 목표 ({week}) {len(goals)}건")
+    if goals:
+        print_goals(goals, numbers, date.today().isoformat(), week)
 
 
 def cmd_todo(args) -> None:
-    """todo·in_progress 전체. 목표 묶음(★)을 먼저, 나머지는 「그 외」로. 번호는 접수 순 그대로.
+    """todo·in_progress 전체. 이번 주 목표(★)를 먼저, 나머지는 구분선 아래로. 번호는 접수 순 그대로.
     --all 이면 끝난 일을 번호 없이 뒤에 붙인다 (/todo:add 가 비슷한 일의 티켓 프로젝트를 볼 때)."""
     records = load()
     rows = active_rows(records)
@@ -259,12 +254,14 @@ def cmd_todo(args) -> None:
         return
     today = date.today().isoformat()
     numbers = {r["id"]: n for n, r in enumerate(rows, 1)}
-    groups = goal_groups(records, this_week())
-    grouped = {rec["id"] for _, _, recs in groups for rec in recs}
+    week = this_week()
+    goals = goal_rows(records, week)
+    grouped = {rec["id"] for rec in goals}
     print(f"■ 할 일 {len(rows)}건")
-    print_groups(groups, numbers, today)
-    if groups and len(grouped) < len(rows):
-        print("── 그 외")
+    if goals:
+        print_goals(goals, numbers, today, week)
+        if len(grouped) < len(rows):
+            print("──")
     for rec in rows:
         if rec["id"] not in grouped:
             print("\n".join(row_lines(numbers[rec["id"]], rec, today)))
@@ -304,7 +301,6 @@ def main(argv: list[str]) -> None:
 
     p = subs.add_parser("goal", help="목표 보기·표시·해제")
     p.add_argument("refs", nargs="*", help="목표로 표시할 할 일 — 번호 · 할 일 id · 티켓 키")
-    p.add_argument("--name", help="목표 이름 — 같은 이름으로 표시한 할 일이 한 묶음이 된다 (표시할 때 필수)")
     p.add_argument("--week", help="ISO 주 YYYY-Www (없으면 이번 주)")
     p.add_argument("--clear", nargs="+", metavar="REF", help="목표 표시 해제")
     p.set_defaults(func=cmd_goal)

@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderSurface } from 'claude-code'
 
 import type { TodoItem, TodoSnapshot } from '../types'
-import { ageDays, ageTone, goalGroups, isoWeek, parseTodoFile, todayString } from './format'
+import { ageDays, ageTone, goalItems, isoWeek, parseTodoFile, todayString } from './format'
 
 const PANE = 'todo'
 const REFRESH_MS = 60_000
@@ -34,10 +34,9 @@ async function ledgerPath($: EngineInterface): Promise<string> {
 
 // 화면에 그리는 순서 — 목표 묶음 먼저, 그 밖의 할 일은 뒤에. 방향키가 이 순서로 움직인다
 function ordered(snap: TodoSnapshot): TodoItem[] {
-  const groups = goalGroups(snap.items, snap.week ?? isoWeek(snap.today))
-  const grouped = groups.flatMap(g => g.items)
-  const ids = new Set(grouped.map(i => i.id))
-  return [...grouped, ...snap.items.filter(i => !ids.has(i.id))]
+  const goals = goalItems(snap.items, snap.week ?? isoWeek(snap.today))
+  const ids = new Set(goals.map(i => i.id))
+  return [...goals, ...snap.items.filter(i => !ids.has(i.id))]
 }
 
 // Enter — 고른 할 일의 작업 세션으로 간다. 찾기·Orca 탭 전환은 scripts/goto.py 가 한다
@@ -125,8 +124,8 @@ export const register: Register = on => {
     const fresh = snap.items.filter(i => i.created.slice(0, 10) === snap.today).length
     const doing = snap.items.filter(i => i.inProgress).length
     const week = snap.week ?? isoWeek(snap.today)
-    const groups = goalGroups(snap.items, week)
-    const grouped = new Set(groups.flatMap(g => g.items.map(i => i.id)))
+    const goals = goalItems(snap.items, week)
+    const grouped = new Set(goals.map(i => i.id))
     const rest = snap.items.filter(i => !grouped.has(i.id))
     // pane 본문 폭 기준. 오른쪽 끝 한 칸은 엔진의 스크롤 표시와 겹쳐 잘리므로 2칸 비운다
     const width = Math.max(20, (e.props.bodyColumns ?? 60) - 2)
@@ -157,6 +156,7 @@ export const register: Register = on => {
                 onPress={press => void goTo($, p.item, press.surface)} />
             </Box>
             <Box flexDirection="row" gap={1} flexShrink={0}>
+              {p.item.goal !== null && p.item.goal < week && <Text dimColor>이월</Text>}
               {p.item.inProgress && (
                 <Text backgroundColor="claude" color="inverseText" bold>{' 작업 중 '}</Text>
               )}
@@ -186,17 +186,15 @@ export const register: Register = on => {
 
         {snap.items.length === 0 && !snap.error && <Text color="success">할 일이 없습니다.</Text>}
 
-        {groups.map(g => (
-          <Box key={`${g.name}@${g.carried ?? week}`} flexDirection="column" marginTop={1}>
-            <Text bold color="warning" wrap="truncate-end">
-              {`★ ${g.name}`}
-              {g.carried ? <Text dimColor>{` (이월 ${g.carried})`}</Text> : null}
-            </Text>
-            {g.items.map(item => Item({ item }))}
+        {/* 이번 주 목표는 이름 없이 한 묶음. 지난 주 목표인데 안 끝난 건(이월)도 여기 두고 「이월」을 붙인다 */}
+        {goals.length > 0 && (
+          <Box flexDirection="column" marginTop={1}>
+            <Text bold color="warning">★ 이번 주 목표</Text>
+            {goals.map(item => Item({ item }))}
           </Box>
-        ))}
-        {/* 목표 묶음과 나머지 할 일 사이는 이름 없이 선으로만 나눈다 */}
-        {groups.length > 0 && rest.length > 0 && <Text dimColor>{'─'.repeat(width)}</Text>}
+        )}
+        {/* 목표와 나머지 할 일 사이는 이름 없이 선으로만 나눈다 */}
+        {goals.length > 0 && rest.length > 0 && <Text dimColor>{'─'.repeat(width)}</Text>}
 
         <Box flexDirection="column" marginTop={1}>
           {rest.map(item => Item({ item }))}

@@ -10,18 +10,8 @@ export type TodoItem = {
   jira: string | null
   /** state 가 in_progress (/start 로 작업 중) */
   inProgress: boolean
-  /** 목표로 정한 ISO 주 (YYYY-Www) · 목표 아니면 null */
+  /** 목표로 정한 ISO 주 (YYYY-Www) · 목표 아니면 null. 이번 주보다 앞이면 이월 */
   goal: string | null
-  /** 목표 이름 — 같은 이름끼리 한 묶음 */
-  goalName: string | null
-}
-
-/** 화면 맨 위 목표 묶음 하나 */
-export type GoalGroup = {
-  name: string
-  /** 이월이면 원래 주, 이번 주면 null */
-  carried: string | null
-  items: TodoItem[]
 }
 
 export type TodoSnapshot = {

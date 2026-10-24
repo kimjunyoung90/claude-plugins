@@ -1,5 +1,5 @@
 // todo.jsonl 을 읽어 화면용 묶음으로 나눈다. 엔진에 기대지 않는 순수 함수만 둔다.
-import type { GoalGroup, TodoItem } from '../types'
+import type { TodoItem } from '../types'
 
 export type AgeTone = 'success' | 'text' | 'warning' | 'error'
 
@@ -27,7 +27,6 @@ export function parseTodoFile(text: string): TodoItem[] {
       jira: str(row.jira),
       inProgress: row.state === 'in_progress',
       goal: str(row.goal),
-      goalName: str(row.goal_name),
     })
   }
   // todo.py todo 와 같은 순서(접수 시각, 같으면 할 일 id 순)로 번호를 매긴다
@@ -49,17 +48,9 @@ export function isGoal(item: TodoItem, week: string): boolean {
   return item.goal !== null && item.goal <= week
 }
 
-/** 목표별 묶음 — todo.py goal_groups 와 같은 기준. 목록 번호 순으로 처음 나온 묶음부터 */
-export function goalGroups(items: TodoItem[], week: string): GoalGroup[] {
-  const groups = new Map<string, GoalGroup>()
-  for (const item of items) {
-    if (!isGoal(item, week)) continue
-    const name = item.goalName ?? ''
-    const id = `${name}\u0000${item.goal}`
-    if (!groups.has(id)) groups.set(id, { name, carried: item.goal === week ? null : item.goal, items: [] })
-    groups.get(id)!.items.push(item)
-  }
-  return [...groups.values()]
+/** 이번 주 목표인 할 일(이월 포함) — todo.py goal_rows 와 같은 기준. 목록 번호 순 */
+export function goalItems(items: TodoItem[], week: string): TodoItem[] {
+  return items.filter(item => isGoal(item, week))
 }
 
 /** 추가한 날(created)부터 기준일까지 경과 일수 */
