@@ -14,6 +14,10 @@ const snapshot = atom({ plugin: 'todo', key: 'snapshot' } as const, {
   updatedAt: '',
 } as TodoSnapshot)
 
+// 방향키로 고른 할 일. 줄마다 그린 Button(key row:<id>)에 포커스가 오면 바뀐다
+const selected = atom({ plugin: 'todo', key: 'selected' } as const, null as string | null)
+const ROW = 'row:'
+
 function clock(): string {
   const d = new Date()
   const p = (n: number) => String(n).padStart(2, '0')
@@ -25,6 +29,14 @@ async function ledgerPath($: EngineInterface): Promise<string> {
   const home = (await $.env.get('HOME')) ?? ''
   const dir = (await $.env.get('TODO_DATA_DIR')) || `${home}/.claude/todo`
   return `${dir.startsWith('~/') ? `${home}${dir.slice(1)}` : dir}/todo.jsonl`
+}
+
+// 화면에 그리는 순서 — 목표 묶음 먼저, 그 밖의 할 일은 뒤에. 방향키가 이 순서로 움직인다
+function ordered(snap: TodoSnapshot): TodoItem[] {
+  const groups = goalGroups(snap.items, snap.week ?? isoWeek(snap.today))
+  const grouped = groups.flatMap(g => g.items)
+  const ids = new Set(grouped.map(i => i.id))
+  return [...grouped, ...snap.items.filter(i => !ids.has(i.id))]
 }
 
 async function refresh($: EngineInterface): Promise<void> {
@@ -49,7 +61,7 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'todo' }, async $ => {
-    await $.ui.open({ id: PANE, title: '할 일 목록' })
+    await $.ui.open({ id: PANE, title: '할 일 목록', focus: true })  // 열자마자 방향키가 목록을 움직이게
     await refresh($)
     const { items } = await read($, snapshot)
     return { text: `할 일 목록 화면을 열었습니다 (할 일 ${items.length}건).` }
@@ -66,9 +78,32 @@ export const register: Register = on => {
     return ran
   })
 
+  // 포커스가 줄 사이를 옮겨 갈 때 고른 할 일을 기억해 그 줄을 표시한다
+  on('ui.focus', { requestId: PANE }, async ($, e, next) => {
+    const id = e.element?.startsWith(ROW) ? e.element.slice(ROW.length) : null
+    await update($, selected, () => id)
+    return next(e)
+  })
+
+  // 패널에서 방향키는 원래 화면을 한 줄씩 굴린다. 한 줄짜리 키 이동(포인터 없음)은 굴리는 대신
+  // 다음·이전 할 일로 포커스를 옮기고 그 줄이 보이게 한다. 휠·페이지 키는 그대로 굴린다
+  on('ui.scroll', { requestId: PANE }, async ($, e, next) => {
+    if (e.origin.kind !== 'person' || e.pointer || Math.abs(e.by) !== 1) return next(e)
+    const ids = ordered(await read($, snapshot)).map(i => i.id)
+    const current = await read($, selected)
+    const at = current ? ids.indexOf(current) : -1
+    const target = ids[Math.min(ids.length - 1, Math.max(0, at + e.by))]
+    if (!target) return next(e)
+    await $.ui.focus({ requestId: PANE, key: `${ROW}${target}` })
+    await $.ui.scroll({ in: PANE, to: { key: `${ROW}${target}` } })
+    return {}
+  })
+
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
-    const { Box, Text } = $.ui.resolve(e)
+    const { Box, Text, Button } = $.ui.resolve(e)
     const snap = await read($, snapshot)
+    const picked = await read($, selected)
+    const first = ordered(snap)[0]?.id
     const stale = snap.items.filter(i => ageDays(i.created, snap.today) >= 7).length
     const fresh = snap.items.filter(i => i.created.slice(0, 10) === snap.today).length
     const doing = snap.items.filter(i => i.inProgress).length
@@ -91,13 +126,17 @@ export const register: Register = on => {
     const Item = (p: { item: TodoItem }) => {
       const days = ageDays(p.item.created, snap.today)
       const tone = ageTone(days)
+      const isPicked = picked === p.item.id
       return (
         <Box key={p.item.id} flexDirection="column" marginBottom={1}>
           <Box flexDirection="row" justifyContent="space-between" gap={1}>
             <Box flexDirection="row" gap={1} flexShrink={1}>
+              <Text bold color="claude">{isPicked ? "❯" : " "}</Text>
               <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
               <Text color={tone} bold>{days >= 7 ? '●' : days === 0 ? '✦' : '○'}</Text>
-              <Text bold wrap="truncate-end">{p.item.title}</Text>
+              {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다 — 누르는 동작은 아직 없다 */}
+              <Button key={`${ROW}${p.item.id}`} plain label={p.item.title} autoFocus={p.item.id === first ? true : undefined}
+                onPress={() => {}} />
             </Box>
             <Box flexDirection="row" gap={1} flexShrink={0}>
               {p.item.inProgress && (
@@ -107,7 +146,7 @@ export const register: Register = on => {
             </Box>
           </Box>
           {p.item.jira && (
-            <Box paddingLeft={5}>
+            <Box paddingLeft={7}>
               <Text dimColor>{p.item.jira}</Text>
             </Box>
           )}
@@ -147,7 +186,7 @@ export const register: Register = on => {
         <Text dimColor wrap="truncate-end">
           {snap.error
             ? `갱신 실패: ${snap.error}`
-            : `✦ 오늘  ○ 7일 미만  ● 7일↑  ★ 목표 · 갱신 ${snap.updatedAt}`}
+            : `↑↓ 이동 · Esc 입력창 · ✦ 오늘 ○ 7일 미만 ● 7일↑ ★ 목표 · 갱신 ${snap.updatedAt}`}
         </Text>
       </Box>
     )

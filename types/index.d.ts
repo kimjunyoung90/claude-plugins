@@ -37,6 +37,10 @@ export type TodoSnapshot = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'todo': { snapshot: TodoSnapshot }
+    'todo': {
+      snapshot: TodoSnapshot
+      /** 화면에서 방향키로 고른 할 일 id (T-NNNN) · 고르지 않았으면 null */
+      selected: string | null
+    }
   }
 }
