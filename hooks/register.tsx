@@ -195,7 +195,8 @@ export const register: Register = on => {
             {g.items.map(item => Item({ item }))}
           </Box>
         ))}
-        {groups.length > 0 && rest.length > 0 && <Text dimColor>{'── 그 외'}</Text>}
+        {/* 목표 묶음과 나머지 할 일 사이는 이름 없이 선으로만 나눈다 */}
+        {groups.length > 0 && rest.length > 0 && <Text dimColor>{'─'.repeat(width)}</Text>}
 
         <Box flexDirection="column" marginTop={1}>
           {rest.map(item => Item({ item }))}
