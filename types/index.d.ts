@@ -31,8 +31,6 @@ declare module 'claude-code' {
       snapshot: TodoSnapshot
       /** 화면에서 방향키로 고른 할 일 id (T-NNNN) · 고르지 않았으면 null */
       selected: string | null
-      /** 상태 셀렉트에서 고른 횟수 — 셀렉트 key 에 붙여 고른 뒤 지금 상태로 다시 그린다 */
-      picks: number
     }
   }
 }
