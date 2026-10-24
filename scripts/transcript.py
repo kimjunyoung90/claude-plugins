@@ -59,8 +59,8 @@ def turns(transcript: Path) -> list[dict]:
 
 
 def last_state(transcript: Path) -> dict:
-    """기록의 마지막 모습 — 마지막 요청·답변, 마지막 활동 시각, 마지막 줄이 도구 호출이면 그 도구(작업 중일 때 지금 하는 일)."""
-    state: dict = {"prompt": None, "answer": None, "at": None, "tool": None}
+    """기록의 마지막 모습 — 마지막 답변, 마지막 활동 시각, 마지막 줄이 도구 호출이면 그 도구 {name, input}(지금 하는 일)."""
+    state: dict = {"answer": None, "at": None, "tool": None}
     for line in transcript.open(encoding="utf-8"):
         try:
             rec = json.loads(line)
@@ -70,17 +70,12 @@ def last_state(transcript: Path) -> dict:
             continue
         state["at"] = rec["timestamp"]
         if rec["type"] == "user":
-            if text := prompt_text(rec):
-                state.update(prompt=text, answer=None)
+            if prompt_text(rec):
+                state["answer"] = None   # 새 요청이 오면 앞의 답변은 지난 보고다
             continue
         if text := answer_text(rec):
             state["answer"] = text
         uses = [b for b in (rec.get("message") or {}).get("content") or []
                 if isinstance(b, dict) and b.get("type") == "tool_use"]
-        if uses:
-            args = uses[-1].get("input") or {}
-            detail = args.get("description") or args.get("file_path") or args.get("command") or ""
-            state["tool"] = f"{uses[-1].get('name')}: {detail}".rstrip(": ")
-        else:
-            state["tool"] = None
+        state["tool"] = {"name": uses[-1].get("name"), "input": uses[-1].get("input") or {}} if uses else None
     return state

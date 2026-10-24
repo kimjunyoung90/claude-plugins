@@ -49,7 +49,12 @@ todo.py set <번호> in_progress
 
 ## 4. 끝나면 알림 받기
 
-띄운 세션마다 다음에 쉬게 될 때 알려 달라고 구독한다 — `SendMessage` 에 `notify_when_idle: true`, 메시지 없이.
+띄운 세션마다 다음에 쉬게 될 때 알려 달라고 구독한다. 보낼 말은 없으니 `message` 는 빈 문자열로 둔다 — 값 없이 `"message": ,` 로 쓰면 형식 오류다.
+
+```json
+{"to": "<세션 이름>", "message": "", "notify_when_idle": true, "summary": "<KEY> 완료 알림 구독"}
+```
+
 세션은 `ListAgents` 에서 찾는다: bg 는 이름이 `<KEY> <제목>`, Orca 는 작업 경로가 그 워크트리다. 아직 목록에 없으면 건너뛴다(`/check` 로 볼 수 있다).
 알림은 한 번만 온다. 알림이 오면 `/check <번호>` 처럼 그 건의 보고를 정리해 알린다.
 
