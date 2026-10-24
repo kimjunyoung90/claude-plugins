@@ -17,7 +17,16 @@ const snapshot = atom({ plugin: 'todo', key: 'snapshot' } as const, {
 // 방향키로 고른 할 일. 줄마다 그린 Button(key row:<id>)에 포커스가 오면 바뀐다
 const selected = atom({ plugin: 'todo', key: 'selected' } as const, null as string | null)
 const ROW = 'row:'
+const STATE = 'state:'  // 줄마다 제목 오른쪽의 상태 셀렉트 — → 로 들어가 Enter 로 고른다
+// 셀렉트는 사람이 고른 값을 다시 그려도 붙들고 있다. 고를 때마다 이 번호를 올려 key 를 바꾸면 새로 그린다
+const picks = atom({ plugin: 'todo', key: 'picks' } as const, 0)
 const PICKED_BG = '#3a3a3a'  // 고른 줄 바탕 — 어두운 패널 위에서 한 단계 밝게
+
+const STATE_OPTIONS = [
+  { value: 'todo', label: '할 일' },
+  { value: 'in_progress', label: '작업 중' },
+  { value: 'done', label: '완료' },
+] as const
 
 function clock(): string {
   const d = new Date()
@@ -53,6 +62,17 @@ async function goTo($: EngineInterface, item: TodoItem, surface?: RenderSurface)
   // Orca 탭 전환은 goto.py --switch 가 이미 했다. 갈 세션이 없으면(none) 아무것도 하지 않는다
   if (out.action === 'start') await $.prompt.fill({ text: `/start ${out.no}` })
   else if (out.action === 'bg') await $.ui.copy({ text: `claude attach ${out.id}`, surface })
+}
+
+// 상태 셀렉트에서 고른 값 — 상태 바꾸기는 세션·워크로그·지라가 함께 움직여야 해서
+// 바로 바꾸지 않고 해당 명령을 입력창에 채운다. 실행은 사람이 Enter 로 한다
+async function pickState($: EngineInterface, item: TodoItem, value: string): Promise<void> {
+  const now = item.inProgress ? 'in_progress' : 'todo'
+  if (value === now) return
+  if (value === 'in_progress') await $.prompt.fill({ text: `/start ${item.no}` })
+  else if (value === 'done') await $.prompt.fill({ text: `/finish ${item.jira ?? ''}`.trim() })
+  // 명령은 아직 실행 전이니 셀렉트는 지금 상태로 되돌려 그린다
+  await update($, picks, n => n + 1)
 }
 
 async function refresh($: EngineInterface): Promise<void> {
@@ -96,7 +116,11 @@ export const register: Register = on => {
 
   // 포커스가 줄 사이를 옮겨 갈 때 고른 할 일을 기억해 그 줄을 표시한다
   on('ui.focus', { requestId: PANE }, async ($, e, next) => {
-    const id = e.element?.startsWith(ROW) ? e.element.slice(ROW.length) : null
+    // ← 가 제목에서 엔진 자리(닫기 ✕)로 넘어가지 않게 — 사람의 키로 할 일 밖에 가려 하면 제자리에 둔다
+    if (!e.element && e.origin.kind === 'person') return {}
+    const el = e.element ?? ''
+    // 제목(row:)이든 상태 셀렉트(state:)든 그 줄을 고른 것으로 친다
+    const id = el.startsWith(ROW) ? el.slice(ROW.length) : el.startsWith(STATE) ? el.slice(STATE.length).split('#')[0] : null
     await update($, selected, () => id)
     return next(e)
   })
@@ -116,9 +140,10 @@ export const register: Register = on => {
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
-    const { Box, Text, Button } = $.ui.resolve(e)
+    const { Box, Text, Button, Select } = $.ui.resolve(e)
     const snap = await read($, snapshot)
     const picked = await read($, selected)
+    const pickNo = await read($, picks)
     const first = ordered(snap)[0]?.id
     // 받은 지 며칠 — 줄마다 붙는 ● 색과 같은 기준(ageTone). 위쪽 개수가 그 색의 설명을 겸한다
     const tones = snap.items.map(i => ageTone(ageDays(i.created, snap.today)))
@@ -170,9 +195,10 @@ export const register: Register = on => {
                 onPress={press => void goTo($, p.item, press.surface)} />
             </Box>
             <Box flexDirection="row" gap={1} flexShrink={0}>
-              {p.item.inProgress && (
-                <Text backgroundColor="claude" color="inverseText" bold>{' 작업 중 '}</Text>
-              )}
+              {/* 상태 셀렉트 — 작업 중이면 「할 일」로 되돌리는 길은 두지 않는다(세션이 이미 떠 있다) */}
+              <Select key={`${STATE}${p.item.id}#${pickNo}`} value={p.item.inProgress ? 'in_progress' : 'todo'}
+                options={p.item.inProgress ? STATE_OPTIONS.slice(1) : STATE_OPTIONS}
+                onSelect={value => void pickState($, p.item, value)} />
             </Box>
           </Box>
           {p.item.jira && (
