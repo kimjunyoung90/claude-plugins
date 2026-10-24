@@ -40,28 +40,19 @@ function ordered(snap: TodoSnapshot): TodoItem[] {
 }
 
 // Enter — 고른 할 일의 작업 세션으로 간다. 찾기·Orca 탭 전환은 scripts/goto.py 가 한다
-type GotoResult = { action: 'start' | 'orca' | 'bg' | 'none'; no?: number; id?: string; title?: string; reason?: string }
+type GotoResult = { action: 'start' | 'orca' | 'bg' | 'none'; no?: number; id?: string }
 
 async function goTo($: EngineInterface, item: TodoItem, surface?: RenderSurface): Promise<void> {
   let out: GotoResult
   try {
     const ran = await $.process.run(['python3', `${$.plugin.root}/scripts/goto.py`, item.id, '--switch'], { timeoutMs: 30_000 })
     out = JSON.parse(ran.stdout.trim().split('\n').pop() || '{}') as GotoResult
-  } catch (err) {
-    $.ui.toast(`세션을 찾지 못했습니다: ${err instanceof Error ? err.message : String(err)}`)
-    return
+  } catch {
+    return  // 세션을 찾지 못하면 아무것도 하지 않는다
   }
-  if (out.action === 'start') {
-    await $.prompt.fill({ text: `/start ${out.no}` })
-    $.ui.toast(`입력창에 /start ${out.no} 를 넣었습니다 — Enter 로 시작`)
-  } else if (out.action === 'orca') {
-    $.ui.toast(`Orca 탭으로 이동했습니다: ${out.title}`)
-  } else if (out.action === 'bg') {
-    await $.ui.copy({ text: `claude attach ${out.id}`, surface })
-    $.ui.toast(`백그라운드 세션입니다 — claude attach ${out.id} 를 복사했습니다`)
-  } else {
-    $.ui.toast(out.reason ?? '갈 세션이 없습니다')
-  }
+  // Orca 탭 전환은 goto.py --switch 가 이미 했다. 갈 세션이 없으면(none) 아무것도 하지 않는다
+  if (out.action === 'start') await $.prompt.fill({ text: `/start ${out.no}` })
+  else if (out.action === 'bg') await $.ui.copy({ text: `claude attach ${out.id}`, surface })
 }
 
 async function refresh($: EngineInterface): Promise<void> {
