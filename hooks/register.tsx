@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register } from 'claude-code'
+import type { EngineInterface, Register, RenderSurface } from 'claude-code'
 
 import type { TodoItem, TodoSnapshot } from '../types'
 import { ageDays, ageLabel, ageTone, goalGroups, isoWeek, parseTodoFile, todayString } from './format'
@@ -37,6 +37,31 @@ function ordered(snap: TodoSnapshot): TodoItem[] {
   const grouped = groups.flatMap(g => g.items)
   const ids = new Set(grouped.map(i => i.id))
   return [...grouped, ...snap.items.filter(i => !ids.has(i.id))]
+}
+
+// Enter — 고른 할 일의 작업 세션으로 간다. 찾기·Orca 탭 전환은 scripts/goto.py 가 한다
+type GotoResult = { action: 'start' | 'orca' | 'bg' | 'none'; no?: number; id?: string; title?: string; reason?: string }
+
+async function goTo($: EngineInterface, item: TodoItem, surface?: RenderSurface): Promise<void> {
+  let out: GotoResult
+  try {
+    const ran = await $.process.run(['python3', `${$.plugin.root}/scripts/goto.py`, item.id, '--switch'], { timeoutMs: 30_000 })
+    out = JSON.parse(ran.stdout.trim().split('\n').pop() || '{}') as GotoResult
+  } catch (err) {
+    $.ui.toast(`세션을 찾지 못했습니다: ${err instanceof Error ? err.message : String(err)}`)
+    return
+  }
+  if (out.action === 'start') {
+    await $.prompt.fill({ text: `/start ${out.no}` })
+    $.ui.toast(`입력창에 /start ${out.no} 를 넣었습니다 — Enter 로 시작`)
+  } else if (out.action === 'orca') {
+    $.ui.toast(`Orca 탭으로 이동했습니다: ${out.title}`)
+  } else if (out.action === 'bg') {
+    await $.ui.copy({ text: `claude attach ${out.id}`, surface })
+    $.ui.toast(`백그라운드 세션입니다 — claude attach ${out.id} 를 복사했습니다`)
+  } else {
+    $.ui.toast(out.reason ?? '갈 세션이 없습니다')
+  }
 }
 
 async function refresh($: EngineInterface): Promise<void> {
@@ -134,9 +159,9 @@ export const register: Register = on => {
               <Text bold color="claude">{isPicked ? "❯" : " "}</Text>
               <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
               <Text color={tone} bold>{days >= 7 ? '●' : days === 0 ? '✦' : '○'}</Text>
-              {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다 — 누르는 동작은 아직 없다 */}
+              {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다. Enter 는 그 할 일의 작업 세션으로 간다 */}
               <Button key={`${ROW}${p.item.id}`} plain label={p.item.title} autoFocus={p.item.id === first ? true : undefined}
-                onPress={() => {}} />
+                onPress={press => void goTo($, p.item, press.surface)} />
             </Box>
             <Box flexDirection="row" gap={1} flexShrink={0}>
               {p.item.inProgress && (
@@ -186,7 +211,7 @@ export const register: Register = on => {
         <Text dimColor wrap="truncate-end">
           {snap.error
             ? `갱신 실패: ${snap.error}`
-            : `↑↓ 이동 · Esc 입력창 · ✦ 오늘 ○ 7일 미만 ● 7일↑ ★ 목표 · 갱신 ${snap.updatedAt}`}
+            : `↑↓ 이동 · Enter 세션으로 · Esc 입력창 · ✦ 오늘 ○ 7일 미만 ● 7일↑ ★ 목표 · 갱신 ${snap.updatedAt}`}
         </Text>
       </Box>
     )
