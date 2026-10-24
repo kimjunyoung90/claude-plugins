@@ -17,6 +17,7 @@ const snapshot = atom({ plugin: 'todo', key: 'snapshot' } as const, {
 // 방향키로 고른 할 일. 줄마다 그린 Button(key row:<id>)에 포커스가 오면 바뀐다
 const selected = atom({ plugin: 'todo', key: 'selected' } as const, null as string | null)
 const ROW = 'row:'
+const PICKED_BG = '#3a3a3a'  // 고른 줄 바탕 — 어두운 패널 위에서 한 단계 밝게
 
 function clock(): string {
   const d = new Date()
@@ -144,10 +145,11 @@ export const register: Register = on => {
       const tone = ageTone(days)
       const isPicked = picked === p.item.id
       return (
-        <Box key={p.item.id} flexDirection="column" marginBottom={1}>
+        // 고른 줄은 왼쪽 막대와 바탕색으로 두 줄(제목·티켓)을 한 덩어리로 드러낸다
+        <Box key={p.item.id} flexDirection="column" marginBottom={1} backgroundColor={isPicked ? PICKED_BG : undefined}>
           <Box flexDirection="row" justifyContent="space-between" gap={1}>
             <Box flexDirection="row" gap={1} flexShrink={1}>
-              <Text bold color="claude">{isPicked ? "❯" : " "}</Text>
+              <Text bold color="claude">{isPicked ? '▌' : ' '}</Text>
               <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
               <Text color={tone} bold>{days >= 7 ? '●' : days === 0 ? '✦' : '○'}</Text>
               {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다. Enter 는 그 할 일의 작업 세션으로 간다 */}
@@ -162,8 +164,11 @@ export const register: Register = on => {
             </Box>
           </Box>
           {p.item.jira && (
-            <Box paddingLeft={7}>
-              <Text dimColor>{p.item.jira}</Text>
+            <Box flexDirection="row" gap={1}>
+              <Text bold color="claude">{isPicked ? '▌' : ' '}</Text>
+              <Box paddingLeft={5}>
+                <Text dimColor={!isPicked} color={isPicked ? 'claude' : undefined}>{p.item.jira}</Text>
+              </Box>
             </Box>
           )}
         </Box>
