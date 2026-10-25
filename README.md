@@ -12,7 +12,7 @@ Kim Junyoung의 개인 Claude Code 플러그인 마켓플레이스입니다. 플
 
 | 플러그인 | 설명 | 설치 |
 |---|---|---|
-| [study-kit](https://github.com/kimjunyoung90/study-kit) | 공부 노트로 손글씨 PDF 시험을 보고, 몰랐던 것을 학습 로그에 쌓아 간격 복습 | `/plugin install study-kit@kimjunyoung90` |
+| [genius](https://github.com/kimjunyoung90/genius) | 공부 노트로 손글씨 PDF 시험을 보고, 몰랐던 것을 학습 로그에 쌓아 간격 복습 | `/plugin install genius@kimjunyoung90` |
 
 ## 플러그인 추가하는 법
 
