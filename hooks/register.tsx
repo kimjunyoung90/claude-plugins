@@ -18,6 +18,7 @@ const snapshot = atom({ plugin: 'todo', key: 'snapshot' } as const, {
 const selected = atom({ plugin: 'todo', key: 'selected' } as const, null as string | null)
 const ROW = 'row:'
 const PICKED_BG = '#3a3a3a'  // 고른 줄 바탕 — 어두운 패널 위에서 한 단계 밝게
+const BAR_ROWS = 40          // 고른 줄 막대로 미리 그려 두는 줄 수 — 할 일 높이에 맞춰 잘린다
 
 function clock(): string {
   const d = new Date()
@@ -158,16 +159,26 @@ export const register: Register = on => {
       const isPicked = e.props.isFocused && picked === p.item.id
       return (
         // 고른 줄은 왼쪽 막대와 바탕색으로 두 줄(제목·티켓)을 한 덩어리로 드러낸다
-        <Box key={p.item.id} flexDirection="column" marginBottom={1} backgroundColor={isPicked ? PICKED_BG : undefined}>
+        <Box key={p.item.id} flexDirection="column" marginBottom={1} paddingLeft={2} backgroundColor={isPicked ? PICKED_BG : undefined}>
+          {/* 막대는 흐름 밖에 두고 위아래 끝에 붙여, 제목이 몇 줄로 줄바꿈돼도 끊기지 않게 한다 */}
+          {isPicked && (
+            <Box position="absolute" top={0} bottom={0} left={0} width={1} overflow="hidden">
+              <Text bold color="claude">{'▌\n'.repeat(BAR_ROWS)}</Text>
+            </Box>
+          )}
           <Box flexDirection="row" justifyContent="space-between" gap={1}>
             <Box flexDirection="row" gap={1} flexShrink={1}>
-              <Text bold color="claude">{isPicked ? '▌' : ' '}</Text>
-              <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
-              {/* 받은 지 며칠은 기호 하나(●)의 색으로만 — 초록 오늘 · 기본 3일 미만 · 노랑 3일↑ · 빨강 7일↑ */}
-              <Text color={tone} bold>●</Text>
+              {/* 번호·● 칸은 줄이지 않는다 — 제목이 길면 제목만 줄바꿈된다 */}
+              <Box flexDirection="row" gap={1} flexShrink={0}>
+                <Text bold color="claude">{String(p.item.no).padStart(2, ' ')}</Text>
+                {/* 받은 지 며칠은 기호 하나(●)의 색으로만 — 초록 오늘 · 기본 3일 미만 · 노랑 3일↑ · 빨강 7일↑ */}
+                <Text color={tone} bold>●</Text>
+              </Box>
               {/* 제목을 Button 으로 그려야 포커스가 줄마다 멈춘다. Enter 는 그 할 일의 작업 세션으로 간다 */}
-              <Button key={`${ROW}${p.item.id}`} plain label={p.item.title} autoFocus={p.item.id === first ? true : undefined}
-                onPress={press => void goTo($, p.item, press.surface)} />
+              <Box flexShrink={1}>
+                <Button key={`${ROW}${p.item.id}`} plain label={p.item.title} autoFocus={p.item.id === first ? true : undefined}
+                  onPress={press => void goTo($, p.item, press.surface)} />
+              </Box>
             </Box>
             <Box flexDirection="row" gap={1} flexShrink={0}>
               {p.item.inProgress && (
@@ -176,9 +187,8 @@ export const register: Register = on => {
             </Box>
           </Box>
           {p.item.jira && (
-            <Box flexDirection="row" gap={1}>
-              <Text bold color="claude">{isPicked ? '▌' : ' '}</Text>
-              <Box paddingLeft={5}>
+            <Box flexDirection="row">
+              <Box paddingLeft={5} flexShrink={0}>
                 <Text dimColor={!isPicked} color={isPicked ? 'claude' : undefined}>{p.item.jira}</Text>
               </Box>
             </Box>
