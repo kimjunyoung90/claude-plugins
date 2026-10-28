@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register, RenderSurface } from 'claude-code'
+import type { EngineInterface, PluginOptions, Register, RenderSurface } from 'claude-code'
 
 import type { TodoItem, TodoSnapshot } from '../types'
 import { ageDays, ageTone, goalItems, isoWeek, parseTodoFile, todayString } from './format'
@@ -17,6 +17,7 @@ const snapshot = atom({ plugin: 'todo', key: 'snapshot' } as const, {
 // 방향키로 고른 할 일. 줄마다 그린 Button(key row:<id>)에 포커스가 오면 바뀐다
 const selected = atom({ plugin: 'todo', key: 'selected' } as const, null as string | null)
 const ROW = 'row:'
+const TICKET = 'ticket:'  // 티켓 번호 Button 의 key — 이 줄에 포커스가 와도 그 할 일을 고른 것으로 본다
 const PICKED_BG = '#3a3a3a'  // 고른 줄 바탕 — 어두운 패널 위에서 한 단계 밝게
 const BAR_ROWS = 40          // 고른 줄 막대로 미리 그려 두는 줄 수 — 할 일 높이에 맞춰 잘린다
 
@@ -38,6 +39,21 @@ function ordered(snap: TodoSnapshot): TodoItem[] {
   const goals = goalItems(snap.items, snap.week ?? isoWeek(snap.today))
   const ids = new Set(goals.map(i => i.id))
   return [...goals, ...snap.items.filter(i => !ids.has(i.id))]
+}
+
+// 지라 주소 — 플러그인 설정(jira_url), 없으면 settings.json env 의 TODO_JIRA_URL (스크립트와 같은 이름)
+async function jiraBase($: EngineInterface, options: PluginOptions): Promise<string | null> {
+  const url = (typeof options.jira_url === 'string' && options.jira_url) || (await $.env.get('TODO_JIRA_URL')) || ''
+  return url ? url.replace(/\/+$/, '') : null
+}
+
+// 티켓 번호를 누르면 그 티켓을 브라우저로 연다 — 터미널의 링크 처리(Cmd+클릭 등)에 기대지 않게 플러그인이 직접 연다
+async function openTicket($: EngineInterface, url: string): Promise<void> {
+  try {
+    await $.process.run(['python3', '-m', 'webbrowser', '-t', url], { timeoutMs: 10_000 })
+  } catch {
+    // 브라우저를 못 열어도 화면은 그대로 둔다
+  }
 }
 
 // Enter — 고른 할 일의 작업 세션으로 간다. 찾기·Orca 탭 전환은 scripts/goto.py 가 한다
@@ -68,7 +84,7 @@ async function refresh($: EngineInterface): Promise<void> {
   }
 }
 
-export const register: Register = on => {
+export const register: Register = (on, options) => {
 
   on('session.start', async ($, e, next) => {
     await $.command.register({ name: 'todo', description: '할 일 목록 화면 열기' })
@@ -97,7 +113,9 @@ export const register: Register = on => {
 
   // 포커스가 줄 사이를 옮겨 갈 때 고른 할 일을 기억해 그 줄을 표시한다
   on('ui.focus', { requestId: PANE }, async ($, e, next) => {
-    const id = e.element?.startsWith(ROW) ? e.element.slice(ROW.length) : null
+    const element = e.element ?? ''
+    const id = element.startsWith(ROW) ? element.slice(ROW.length)
+      : element.startsWith(TICKET) ? element.slice(TICKET.length) : null
     await update($, selected, () => id)
     return next(e)
   })
@@ -120,6 +138,7 @@ export const register: Register = on => {
     const { Box, Text, Button } = $.ui.resolve(e)
     const snap = await read($, snapshot)
     const picked = await read($, selected)
+    const jira = await jiraBase($, options)
     const first = ordered(snap)[0]?.id
     // 받은 지 며칠 — 줄마다 붙는 ● 색과 같은 기준(ageTone). 위쪽 개수가 그 색의 설명을 겸한다
     const tones = snap.items.map(i => ageTone(ageDays(i.created, snap.today)))
@@ -189,7 +208,12 @@ export const register: Register = on => {
           {p.item.jira && (
             <Box flexDirection="row">
               <Box paddingLeft={5} flexShrink={0}>
-                <Text dimColor={!isPicked} color={isPicked ? 'claude' : undefined}>{p.item.jira}</Text>
+                {jira ? (
+                  <Button key={`${TICKET}${p.item.id}`} plain dimColor={!isPicked} label={p.item.jira}
+                    onPress={() => void openTicket($, `${jira}/browse/${p.item.jira}`)} />
+                ) : (
+                  <Text dimColor={!isPicked} color={isPicked ? 'claude' : undefined}>{p.item.jira}</Text>
+                )}
               </Box>
             </Box>
           )}
