@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>genius 설계도</title>
+<style>
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --text: #1f2328;
+  --muted: #6b6f76;
+  --line: #d4d2cb;
+  --accent: #2f6fd6;
+  --accent-soft: #e6eefb;
+  --warn: #c2412d;
+  --warn-soft: #fbe9e5;
+  --ok: #2c8a4b;
+  --ok-soft: #e4f3e9;
+  --store: #8a5a12;
+  --store-soft: #f6eedd;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17181b;
+    --surface: #212328;
+    --text: #e7e7e9;
+    --muted: #9a9ea6;
+    --line: #3a3d44;
+    --accent: #7aa7f0;
+    --accent-soft: #1f2d45;
+    --warn: #ef8a78;
+    --warn-soft: #3d2420;
+    --ok: #6cc98b;
+    --ok-soft: #1d3326;
+    --store: #e0b46a;
+    --store-soft: #382d1b;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17181b;
+  --surface: #212328;
+  --text: #e7e7e9;
+  --muted: #9a9ea6;
+  --line: #3a3d44;
+  --accent: #7aa7f0;
+  --accent-soft: #1f2d45;
+  --warn: #ef8a78;
+  --warn-soft: #3d2420;
+  --ok: #6cc98b;
+  --ok-soft: #1d3326;
+  --store: #e0b46a;
+  --store-soft: #382d1b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.65 "Apple SD Gothic Neo", "Pretendard", system-ui, sans-serif;
+}
+main { max-width: 960px; margin: 0 auto; padding: 40px 16px 80px; }
+h1 { font-size: 28px; margin: 0 0 6px; }
+h2 { font-size: 20px; margin: 48px 0 8px; }
+p { margin: 8px 0; }
+.lead { color: var(--muted); margin-bottom: 24px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+}
+svg { display: block; width: 100%; height: auto; }
+svg text { fill: var(--text); font-family: inherit; }
+svg .muted { fill: var(--muted); }
+svg .node { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+svg .node-accent { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+svg .node-store { fill: var(--store-soft); stroke: var(--store); stroke-width: 1.5; }
+svg .node-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 1.5; }
+svg .arrow { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+svg .arrow-accent { stroke: var(--accent); stroke-width: 1.8; fill: none; }
+svg .arrow-warn { stroke: var(--warn); stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+svg .arrow-store { stroke: var(--store); stroke-width: 1.4; fill: none; }
+svg .dash { stroke-dasharray: 5 4; }
+.mk-muted { fill: var(--muted); }
+.mk-accent { fill: var(--accent); }
+.mk-warn { fill: var(--warn); }
+.mk-store { fill: var(--store); }
+code {
+  font: 13px/1.4 Menlo, ui-monospace, monospace;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.note { font-size: 14px; color: var(--muted); }
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 12px; }
+.principles .card { margin: 0; }
+.principles h3 { margin: 0 0 4px; font-size: 15px; }
+.principles p { font-size: 14px; margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--muted); margin-top: 8px; }
+.legend span::before { content: ""; display: inline-block; width: 18px; height: 0; border-top: 2px solid; vertical-align: middle; margin-right: 6px; }
+.legend .l-accent::before { border-color: var(--accent); }
+.legend .l-warn::before { border-color: var(--warn); border-top-style: dashed; }
+.legend .l-muted::before { border-color: var(--muted); }
+.legend .l-store::before { border-color: var(--store); }
+</style>
+</head>
+<body>
+<main>
+  <h1>genius 설계도</h1>
+  <p class="lead">공부한 노트를 기억에서 꺼내 시험 보고, 틀린 것과 모르는 것을 학습 로그에 쌓아 간격을 늘려 가며 다시 시험 보는 학습 시스템입니다.</p>
+
+  <!-- 1. 구조 · 개요 -->
+  <h2>1. 구조 · 개요</h2>
+  <p>시험 → 채점 → 오답 정리 → 복습이 한 바퀴입니다. 모든 바퀴의 중심에는 <b>학습 로그</b>가 있어서, 무엇을 몰랐는지와 언제 다시 볼지를 기억합니다.</p>
+  <div class="card">
+    <svg viewBox="0 0 880 410" role="img" aria-label="학습 순환 구조">
+      <defs>
+        <marker id="a-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk-accent"/></marker>
+        <marker id="a-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk-muted"/></marker>
+      </defs>
+
+      <!-- 복습 루프 (위) -->
+      <path d="M770 70 V30 H110 V66" class="arrow-accent" marker-end="url(#a-accent)"/>
+      <text x="440" y="22" text-anchor="middle" class="muted" font-size="13">복습일이 되면 다른 각도로 다시 시험</text>
+
+      <!-- 네 단계 -->
+      <rect x="20" y="70" width="180" height="70" rx="10" class="node-accent"/>
+      <text x="110" y="100" text-anchor="middle" font-size="16" font-weight="700">시험</text>
+      <text x="110" y="122" text-anchor="middle" class="muted" font-size="13">/genius:test · 손글씨</text>
+
+      <rect x="240" y="70" width="180" height="70" rx="10" class="node-accent"/>
+      <text x="330" y="100" text-anchor="middle" font-size="16" font-weight="700">채점</text>
+      <text x="330" y="122" text-anchor="middle" class="muted" font-size="12">/genius:test grade · check</text>
+
+      <rect x="460" y="70" width="180" height="70" rx="10" class="node-accent"/>
+      <text x="550" y="100" text-anchor="middle" font-size="16" font-weight="700">오답 정리</text>
+      <text x="550" y="122" text-anchor="middle" class="muted" font-size="13">시험지 닫고 자기 말로</text>
+
+      <rect x="680" y="70" width="180" height="70" rx="10" class="node-accent"/>
+      <text x="770" y="100" text-anchor="middle" font-size="16" font-weight="700">복습</text>
+      <text x="770" y="122" text-anchor="middle" class="muted" font-size="13">/genius:test review</text>
+
+      <path d="M200 105 H236" class="arrow-accent" marker-end="url(#a-accent)"/>
+      <path d="M420 105 H456" class="arrow-accent" marker-end="url(#a-accent)"/>
+      <path d="M640 105 H676" class="arrow-accent" marker-end="url(#a-accent)"/>
+
+      <!-- 학습 로그와 연결 -->
+      <path d="M330 140 V216" class="arrow dash" marker-end="url(#a-muted)"/>
+      <text x="340" y="185" class="muted" font-size="12">모든 문항 · 질문 · 틀린 이해</text>
+      <path d="M550 140 V216" class="arrow dash" marker-end="url(#a-muted)"/>
+      <text x="560" y="185" class="muted" font-size="12">내 한 줄</text>
+      <path d="M770 144 V216" class="arrow dash" marker-start="url(#a-muted)" marker-end="url(#a-muted)"/>
+      <text x="780" y="185" class="muted" font-size="12">꺼내고 갱신</text>
+      <path d="M110 220 V144" class="arrow dash" marker-end="url(#a-muted)"/>
+      <text x="120" y="185" class="muted" font-size="12">출제 근거</text>
+
+      <rect x="20" y="220" width="840" height="64" rx="10" class="node-store"/>
+      <text x="440" y="247" text-anchor="middle" font-size="16" font-weight="700">학습 로그.md</text>
+      <text x="440" y="270" text-anchor="middle" class="muted" font-size="13">무엇을 몰랐고 언제 다시 볼지만 기록 · 정답과 해설은 넣지 않음</text>
+
+      <!-- 시험 밖 질문 -->
+      <rect x="290" y="330" width="300" height="64" rx="10" class="node"/>
+      <text x="440" y="357" text-anchor="middle" font-size="15" font-weight="700">Claude 대화 중 개념 질문</text>
+      <text x="440" y="379" text-anchor="middle" class="muted" font-size="13">hook 알림 → question 스킬</text>
+      <path d="M440 330 V288" class="arrow" marker-end="url(#a-muted)"/>
+    </svg>
+  </div>
+
+  <div class="principles">
+    <div class="card"><h3>시험</h3><p>시험은 머릿속에 있는 것을 꺼내는 인출 과정입니다. 이 과정 속에서 기억이 더 단단해집니다.</p></div>
+    <div class="card"><h3>채점</h3><p>채점은 정답과 모든 문항의 해설을 확인하는 과정입니다. 맞힌 문항도 해설을 보면 제대로 알고 맞힌 것인지, 어쩌다 맞힌 것인지 가려집니다.</p></div>
+    <div class="card"><h3>오답 정리</h3><p>오답 정리는 해설을 보며 몰랐던 내용을 다시 공부한 다음, 자기만의 언어로 다시 쓰는 과정입니다. 오답노트 작성 시 해설을 보지 않는 게 중요합니다.</p></div>
+    <div class="card"><h3>복습</h3><p>복습은 학습 로그에 남은 내용을 잊을 때쯤 다시 시험 보는 과정입니다. 잊어 갈 때 다시 꺼내야 기억이 오래 남습니다.</p></div>
+  </div>
+
+  <!-- 2. 구조 · 상세 -->
+  <h2>2. 구조 · 상세</h2>
+  <p>개요의 네 단계는 모두 test 스킬이 맡고, 대화 중 질문은 question 스킬이 맡습니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 플러그인은 스킬 세 개와 hook 하나로 이루어집니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고 <code>~/.claude/genius.json</code> 한 곳에서 읽습니다. 학습 로그의 형식(12개 열, 원인 분류, 단계)은 어느 스킬에도 두지 않고 <code>references/learning-log-format.md</code> 한 곳에 두어, 시험 결과든 대화 중 질문이든 같은 형식으로 쌓습니다. 데이터는 세 폴더에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 정답 키만 숨김 폴더에 둡니다.</p>
+  <div class="card">
+    <svg viewBox="0 0 880 446" role="img" aria-label="플러그인 구조">
+      <defs>
+        <marker id="c-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-muted"/></marker>
+        <marker id="c-store" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-store"/></marker>
+      </defs>
+
+      <text x="100" y="18" text-anchor="middle" class="muted" font-size="13">사용자</text>
+      <text x="390" y="18" text-anchor="middle" class="muted" font-size="13">플러그인</text>
+      <text x="780" y="18" text-anchor="middle" class="muted" font-size="13">데이터</text>
+
+      <!-- 사용자 -->
+      <rect x="20" y="40" width="160" height="44" rx="8" class="node"/>
+      <text x="100" y="67" text-anchor="middle" font-size="14">/genius:setup</text>
+      <rect x="20" y="160" width="160" height="44" rx="8" class="node"/>
+      <text x="100" y="187" text-anchor="middle" font-size="14">/genius:test …</text>
+      <rect x="20" y="284" width="160" height="44" rx="8" class="node"/>
+      <text x="100" y="311" text-anchor="middle" font-size="14">대화 중 개념 질문</text>
+
+      <!-- 플러그인 -->
+      <rect x="250" y="34" width="280" height="56" rx="10" class="node-accent"/>
+      <text x="270" y="58" font-size="15" font-weight="700">setup 스킬</text>
+      <text x="270" y="78" class="muted" font-size="12">PC마다 한 번, 첫 설정</text>
+
+      <rect x="250" y="130" width="280" height="80" rx="10" class="node-accent"/>
+      <text x="270" y="160" font-size="15" font-weight="700">test 스킬</text>
+      <text x="270" y="182" class="muted" font-size="12">시험 · 채점 · 오답 정리 · 복습</text>
+
+      <rect x="250" y="284" width="190" height="44" rx="10" class="node"/>
+      <text x="345" y="303" text-anchor="middle" font-size="14" font-weight="700">UserPromptSubmit hook</text>
+      <text x="345" y="320" text-anchor="middle" class="muted" font-size="11">알림만 붙이고 기록은 question이</text>
+
+      <rect x="250" y="370" width="280" height="60" rx="10" class="node-accent"/>
+      <text x="270" y="395" font-size="15" font-weight="700">question 스킬</text>
+      <text x="270" y="416" class="muted" font-size="12">대화 중 질문 · 자기 말 요약 · 틀린 이해 기록</text>
+
+      <!-- 사용자 → 플러그인 -->
+      <path d="M180 62 H246" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 182 H246" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 306 H246" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M345 328 V366" class="arrow" marker-end="url(#c-muted)"/>
+
+      <!-- 데이터 -->
+      <rect x="690" y="34" width="180" height="56" rx="10" class="node-store"/>
+      <text x="706" y="58" font-size="14" font-weight="700">genius.json</text>
+      <text x="706" y="78" class="muted" font-size="11">PC마다 다른 경로</text>
+
+      <rect x="690" y="110" width="180" height="56" rx="10" class="node-store"/>
+      <text x="706" y="134" font-size="14" font-weight="700">노트 폴더</text>
+      <text x="706" y="154" class="muted" font-size="11">Obsidian · 읽기만</text>
+
+      <rect x="690" y="196" width="180" height="80" rx="10" class="node-store"/>
+      <text x="706" y="220" font-size="14" font-weight="700">학습 폴더</text>
+      <text x="706" y="242" font-size="12">학습 로그 · 시험지 PDF</text>
+      <text x="706" y="262" class="muted" font-size="11">동기화 · 태블릿에서 필기</text>
+
+      <rect x="690" y="356" width="180" height="80" rx="10" class="node-store"/>
+      <text x="706" y="380" font-size="14" font-weight="700">정답 키 (숨김)</text>
+      <text x="706" y="402" font-size="12">시험 정답 · 질문 답 요지</text>
+      <text x="706" y="422" class="muted" font-size="11">시험 전에 보이지 않게</text>
+
+      <!-- 플러그인 → 데이터 -->
+      <path d="M530 62 H686" class="arrow-store" marker-end="url(#c-store)"/>
+      <text x="608" y="56" text-anchor="middle" class="muted" font-size="11">만듦</text>
+      <path d="M530 140 H686" class="arrow-store" marker-end="url(#c-store)"/>
+      <text x="608" y="134" text-anchor="middle" class="muted" font-size="11">읽음</text>
+      <path d="M530 175 C610 175, 610 230, 686 230" class="arrow-store" marker-end="url(#c-store)"/>
+      <text x="608" y="169" text-anchor="middle" class="muted" font-size="11">시험지 · 로그</text>
+      <path d="M530 200 C620 200, 600 380, 686 380" class="arrow-store" marker-end="url(#c-store)"/>
+      <text x="676" y="398" text-anchor="end" class="muted" font-size="11">정답 키</text>
+      <path d="M530 390 C600 390, 610 260, 686 260" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 415 H686" class="arrow-store" marker-end="url(#c-store)"/>
+      <text x="608" y="438" text-anchor="middle" class="muted" font-size="11">로그 · 질문 답 요지</text>
+
+    </svg>
+    <div class="legend">
+      <span class="l-muted">호출 · 알림</span>
+      <span class="l-store">파일 읽기 · 쓰기</span>
+    </div>
+  </div>
+
+  <!-- 3. 복습 메커니즘 -->
+  <h2>3. 복습 메커니즘</h2>
+  <p>학습 로그의 행 하나가 졸업할 때까지 걷는 길입니다. 맞힐 때마다 간격이 늘어나고, 틀리면 처음으로 돌아갑니다. 6·7단계는 오래 묵은 지식을 가끔 꺼내 유지하는 단계입니다.</p>
+  <div class="card">
+    <svg viewBox="0 0 880 250" role="img" aria-label="복습 단계 전이">
+      <defs>
+        <marker id="b-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-accent"/></marker>
+        <marker id="b-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-warn"/></marker>
+        <marker id="b-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-muted"/></marker>
+      </defs>
+
+      <!-- 시작 -->
+      <text x="65" y="40" text-anchor="middle" class="muted" font-size="12">그 밖의 모든 행</text>
+      <path d="M65 46 V76" class="arrow" marker-end="url(#b-muted)"/>
+      <text x="285" y="40" text-anchor="middle" class="muted" font-size="12">확신 정답</text>
+      <path d="M285 46 V76" class="arrow" marker-end="url(#b-muted)"/>
+
+      <!-- 단계 -->
+      <g font-size="14" text-anchor="middle">
+        <rect x="20"  y="80" width="90" height="60" rx="8" class="node-accent"/><text x="65"  y="105" font-weight="700">1단계</text><text x="65"  y="126" class="muted" font-size="12">1일 뒤</text>
+        <rect x="130" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="175" y="105" font-weight="700">2단계</text><text x="175" y="126" class="muted" font-size="12">3일 뒤</text>
+        <rect x="240" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="285" y="105" font-weight="700">3단계</text><text x="285" y="126" class="muted" font-size="12">7일 뒤</text>
+        <rect x="350" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="395" y="105" font-weight="700">4단계</text><text x="395" y="126" class="muted" font-size="12">14일 뒤</text>
+        <rect x="460" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="505" y="105" font-weight="700">5단계</text><text x="505" y="126" class="muted" font-size="12">30일 뒤</text>
+        <rect x="570" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="615" y="105" font-weight="700">6단계</text><text x="615" y="126" class="muted" font-size="12">90일 뒤</text>
+        <rect x="680" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="725" y="105" font-weight="700">7단계</text><text x="725" y="126" class="muted" font-size="12">180일 뒤</text>
+        <rect x="790" y="80" width="80" height="60" rx="8" class="node-ok"/><text x="830" y="115" font-weight="700">졸업</text>
+      </g>
+      <g class="arrow-accent">
+        <path d="M110 110 H126" marker-end="url(#b-accent)"/>
+        <path d="M220 110 H236" marker-end="url(#b-accent)"/>
+        <path d="M330 110 H346" marker-end="url(#b-accent)"/>
+        <path d="M440 110 H456" marker-end="url(#b-accent)"/>
+        <path d="M550 110 H566" marker-end="url(#b-accent)"/>
+        <path d="M660 110 H676" marker-end="url(#b-accent)"/>
+        <path d="M770 110 H786" marker-end="url(#b-accent)"/>
+      </g>
+
+      <!-- 오답이면 1로 -->
+      <path d="M725 140 C725 215, 65 215, 65 144" class="arrow-warn" marker-end="url(#b-warn)"/>
+      <path d="M395 140 C395 180, 90 180, 75 146" class="arrow-warn"/>
+      <text x="440" y="236" text-anchor="middle" class="muted" font-size="13">부분 정답이면 단계 그대로 1일 뒤</text>
+    </svg>
+    <div class="legend">
+      <span class="l-accent">정답: 다음 단계로</span>
+      <span class="l-warn">오답: 1단계로</span>
+      <span class="l-muted">처음 들어오는 단계</span>
+    </div>
+    <p class="note">확신하고 틀린 답(오개념)은 같은 문제가 아니라 같은 착각을 담은 오류 찾기 문제로 다시 나옵니다.</p>
+  </div>
+
+</main>
+</body>
+</html>

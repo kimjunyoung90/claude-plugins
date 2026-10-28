@@ -1,10 +1,10 @@
 ---
 name: setup
-description: genius을 처음 쓰는 PC에서 환경을 점검하고 경로 설정(~/.claude/genius.json), 학습 폴더, 학습 로그, 정답 키 폴더를 준비하는 스킬. 사용자가 "genius 설정", "setup", "경로 바꾸기"를 요청하거나, test·study-log 스킬이 설정 파일이 없다고 안내했을 때 사용한다.
+description: genius을 처음 쓰는 PC에서 환경을 점검하고 경로 설정(~/.claude/genius.json), 학습 폴더, 학습 로그, 정답 키 폴더를 준비하는 스킬. 사용자가 "genius 설정", "setup", "경로 바꾸기"를 요청하거나, test·question 스킬이 설정 파일이 없다고 안내했을 때 사용한다.
 disable-model-invocation: false
 ---
 
-genius(`test`, `study-log` 스킬과 질문 알림 hook)을 쓰기 전에 한 번 실행한다. 이미 설정된 PC에서 다시 실행하면 현재 상태를 보여 주고 바꿀 것만 바꾼다. **이미 있는 파일은 덮어쓰지 않는다.**
+genius(`test`, `question` 스킬과 질문 알림 hook)을 쓰기 전에 한 번 실행한다. 이미 설정된 PC에서 다시 실행하면 현재 상태를 보여 주고 바꿀 것만 바꾼다. **이미 있는 파일은 덮어쓰지 않는다.**
 
 # 1. 환경 확인
 아래를 확인하고 결과를 표로 보여 준다. 없는 것은 설치 방법만 알려 주고, 설치는 사용자가 원할 때 한다.
@@ -44,7 +44,7 @@ genius(`test`, `study-log` 스킬과 질문 알림 hook)을 쓰기 전에 한 �
 # 3. 폴더와 파일 준비
 없는 것만 만든다.
 - `<STUDY>/시험`, `<STUDY>/복습`, `<STUDY>/오답`
-- `<STUDY>/학습 로그.md`: `study-log` 스킬의 "표 형식" 헤더로 만든다.
+- `<STUDY>/학습 로그.md`: `<SKILL>/../../references/learning-log-format.md`의 "표 형식" 헤더로 만든다(`<SKILL>`은 이 스킬의 기본 폴더).
 - `<KEYS>/`, `<KEYS>/질문 기록.md`: 아래 헤더로 만든다.
 
 ```markdown
@@ -55,8 +55,8 @@ genius(`test`, `study-log` 스킬과 질문 알림 hook)을 쓰기 전에 한 �
 
 # 4. 중복 점검
 플러그인과 같은 이름의 스킬이나 hook이 따로 깔려 있으면 두 벌로 작동한다. 아래가 있으면 보여 주고, 지울지 묻는다. 지우기 전에 스크래치패드에 백업한다.
-- `~/.claude/skills/test`, `~/.claude/skills/study-log`
-- `~/.claude/settings.json`의 hooks에서 `study-log-reminder.sh`를 부르는 항목
+- `~/.claude/skills/test`, `~/.claude/skills/question`, `~/.claude/skills/study-log`(question의 예전 이름)
+- `~/.claude/settings.json`의 hooks에서 `question-reminder.sh`나 예전 이름 `study-log-reminder.sh`를 부르는 항목
 - 예전 이름의 플러그인 `study-kit@kimjunyoung90`이 설치되어 있으면 `/plugin uninstall study-kit@kimjunyoung90`으로 지우라고 안내한다(사용자가 직접 실행).
 
 # 5. 마무리

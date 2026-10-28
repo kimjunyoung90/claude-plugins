@@ -1,7 +1,7 @@
 {
   "name": "genius",
-  "description": "손글씨 PDF 시험지 출제·채점·오답노트·간격 복습(test)과, 공부 중 질문을 학습 로그에 기록(study-log)하는 스킬 세트, 첫 설정(setup)",
-  "version": "2.0.0",
+  "description": "손글씨 PDF 시험지 출제·채점·오답노트·간격 복습(test)과, 대화 중 개념 질문을 학습 로그에 기록(question)하는 스킬 세트, 첫 설정(setup)",
+  "version": "2.1.0",
   "author": {
     "name": "Kim Junyoung"
   }
