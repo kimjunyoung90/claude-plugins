@@ -5,7 +5,7 @@ import AppKit
 // usage: swift cropq.swift <시험지.pdf> <출력 폴더> <문제 수> [원래 시험지 페이지 수] [채점 표시]
 // 문제 번호("1.", "2." ...)의 위치를 기준으로 문제와 그 아래 필기를 잘라 q1.png, q2.png ... 로 저장한다.
 // 채점 표시: 문제 순서대로 O(정답), T(부분 정답, 세모), X(오답)를 쉼표로 구분 (예: O,T,X,O,X,X). 번호 위에 빨간색으로 그린다.
-// 일곱 번째 인자로 표시 문자열 접두사(예: "@Q")를 주면, 번호 대신 채점 시험지에 숨겨 둔 "@Q1@" 같은 표시로 문항 블록을 찾는다(check 단계용).
+// 일곱 번째 인자로 표시 문자열 접두사(예: "@Q")를 주면, 번호 대신 해설지에 숨겨 둔 "@Q1@" 같은 표시로 문항 블록을 찾는다(note 단계용).
 let args = CommandLine.arguments
 guard args.count >= 4, let doc = PDFDocument(url: URL(fileURLWithPath: args[1])), let n = Int(args[3]) else {
     FileHandle.standardError.write("usage: swift cropq.swift <pdf> <outdir> <count> [examPages]\n".data(using: .utf8)!)
