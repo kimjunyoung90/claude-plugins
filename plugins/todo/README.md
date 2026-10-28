@@ -7,7 +7,7 @@
 할 일 추가     이번 주 목표    작업 시작    진행 확인    완료
 ```
 
-전체 흐름은 설계도 [`docs/design.html`](docs/design.html)에서 볼 수 있습니다(브라우저로 엽니다).
+전체 흐름은 아키텍처 문서 [`docs/architecture.html`](docs/architecture.html)에서 볼 수 있습니다(브라우저로 엽니다).
 
 ## 설치
 
