@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/skills/study-log/scripts/study-log-reminder.sh\"",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/skills/question/scripts/question-reminder.sh\"",
             "timeout": 5
           }
         ]
