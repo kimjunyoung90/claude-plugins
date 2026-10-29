@@ -178,7 +178,7 @@ code {
 
   <!-- 2. 상세 -->
   <h2>2. 상세</h2>
-  <p>구조의 네 단계는 단계마다 스킬 하나(test, grade, note, review)가 맡고, 대화 중 질문은 question 스킬이 처리합니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고 <code>~/.claude/genius.json</code> 한 곳에서 읽습니다. 학습 로그 형식, 출제 원칙, 시험지 형식, 채점 기준처럼 여러 스킬이 함께 쓰는 규칙은 어느 스킬에도 두지 않고 <code>references/</code>에 한 곳씩 둡니다. 데이터는 세 폴더에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 정답 키만 숨김 폴더에 둡니다.</p>
+  <p>구조의 네 단계는 단계마다 스킬 하나(test, grade, note, review)가 맡고, 대화 중 질문은 question 스킬이 처리합니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고 <code>~/.claude/genius.json</code> 한 곳에서 읽습니다. 학습 로그 형식, 출제 원칙, 시험지 형식, 채점 기준처럼 여러 스킬이 함께 쓰는 규칙은 어느 스킬에도 두지 않고 <code>references/</code>에 한 곳씩 둡니다. 데이터는 노트 폴더와 genius 폴더 두 곳에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 답안지만 숨김 폴더에 둡니다.</p>
   <div class="card">
     <svg viewBox="0 0 880 530" role="img" aria-label="플러그인 구조">
       <defs>
@@ -193,76 +193,75 @@ code {
       <!-- 사용자 -->
       <rect x="20" y="40" width="160" height="44" rx="8" class="node"/>
       <text x="100" y="67" text-anchor="middle" font-size="14">초기 설정</text>
-      <rect x="20" y="182" width="160" height="44" rx="8" class="node"/>
-      <text x="100" y="209" text-anchor="middle" font-size="14">4단계</text>
-      <rect x="20" y="336" width="160" height="44" rx="8" class="node"/>
-      <text x="100" y="363" text-anchor="middle" font-size="14">대화 중 개념 질문</text>
+      <rect x="20" y="206" width="160" height="44" rx="8" class="node"/>
+      <text x="100" y="233" text-anchor="middle" font-size="14">4단계</text>
+      <rect x="20" y="384" width="160" height="44" rx="8" class="node"/>
+      <text x="100" y="411" text-anchor="middle" font-size="14">대화 중 개념 질문</text>
 
       <!-- 플러그인 -->
       <rect x="250" y="34" width="280" height="56" rx="10" class="node-accent"/>
       <text x="270" y="67" font-size="14" font-weight="700">setup</text><text x="380" y="67" class="muted" font-size="12">초기 설정 · PC마다 한 번</text>
 
-      <rect x="250" y="112" width="280" height="40" rx="10" class="node-accent"/>
-      <text x="270" y="137" font-size="14" font-weight="700">test</text><text x="380" y="137" class="muted" font-size="12">시험</text>
-      <rect x="250" y="160" width="280" height="40" rx="10" class="node-accent"/>
-      <text x="270" y="185" font-size="14" font-weight="700">grade</text><text x="380" y="185" class="muted" font-size="12">채점</text>
+      <rect x="250" y="136" width="280" height="40" rx="10" class="node-accent"/>
+      <text x="270" y="161" font-size="14" font-weight="700">test</text><text x="380" y="161" class="muted" font-size="12">시험</text>
       <rect x="250" y="208" width="280" height="40" rx="10" class="node-accent"/>
-      <text x="270" y="233" font-size="14" font-weight="700">note</text><text x="380" y="233" class="muted" font-size="12">오답 정리</text>
+      <text x="270" y="233" font-size="14" font-weight="700">grade</text><text x="380" y="233" class="muted" font-size="12">채점</text>
       <rect x="250" y="256" width="280" height="40" rx="10" class="node-accent"/>
-      <text x="270" y="281" font-size="14" font-weight="700">review</text><text x="380" y="281" class="muted" font-size="12">복습</text>
+      <text x="270" y="281" font-size="14" font-weight="700">note</text><text x="380" y="281" class="muted" font-size="12">오답 정리</text>
+      <rect x="250" y="304" width="280" height="40" rx="10" class="node-accent"/>
+      <text x="270" y="329" font-size="14" font-weight="700">review</text><text x="380" y="329" class="muted" font-size="12">복습</text>
 
-      <rect x="250" y="336" width="190" height="44" rx="10" class="node"/>
-      <text x="345" y="355" text-anchor="middle" font-size="14" font-weight="700">UserPromptSubmit hook</text>
-      <text x="345" y="372" text-anchor="middle" class="muted" font-size="11">알림만 붙이고 기록은 question이</text>
+      <rect x="250" y="384" width="190" height="44" rx="10" class="node"/>
+      <text x="345" y="403" text-anchor="middle" font-size="14" font-weight="700">UserPromptSubmit hook</text>
+      <text x="345" y="420" text-anchor="middle" class="muted" font-size="11">알림만 붙이고 기록은 question이</text>
 
-      <rect x="250" y="414" width="280" height="60" rx="10" class="node-accent"/>
-      <text x="270" y="439" font-size="15" font-weight="700">question</text>
-      <text x="270" y="460" class="muted" font-size="12">대화 중 질문 · 자기 말 요약 · 틀린 이해 기록</text>
+      <rect x="250" y="462" width="280" height="60" rx="10" class="node-accent"/>
+      <text x="270" y="487" font-size="15" font-weight="700">question</text>
+      <text x="270" y="508" class="muted" font-size="12">대화 중 질문 · 자기 말 요약 · 틀린 이해 기록</text>
 
       <!-- 사용자 → 플러그인 -->
       <path d="M180 62 H246" class="arrow" marker-end="url(#c-muted)"/>
-      <path d="M180 204 C215 204, 215 132, 246 132" class="arrow" marker-end="url(#c-muted)"/>
-      <path d="M180 204 C215 204, 215 180, 246 180" class="arrow" marker-end="url(#c-muted)"/>
-      <path d="M180 204 C215 204, 215 228, 246 228" class="arrow" marker-end="url(#c-muted)"/>
-      <path d="M180 204 C215 204, 215 276, 246 276" class="arrow" marker-end="url(#c-muted)"/>
-      <path d="M180 358 H246" class="arrow" marker-end="url(#c-muted)"/>
-      <path d="M345 380 V410" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 228 C215 228, 215 156, 246 156" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 228 H246" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 228 C215 228, 215 276, 246 276" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 228 C215 228, 215 324, 246 324" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M180 406 H246" class="arrow" marker-end="url(#c-muted)"/>
+      <path d="M345 428 V458" class="arrow" marker-end="url(#c-muted)"/>
 
-      <!-- 데이터: 단계마다 산출물 하나 -->
+      <!-- 데이터: 단계마다 산출물 -->
       <rect x="610" y="34" width="260" height="56" rx="10" class="node-store"/>
       <text x="626" y="58" font-size="14" font-weight="700">genius.json</text>
       <text x="626" y="78" class="muted" font-size="11">PC마다 다른 경로</text>
 
       <rect x="610" y="112" width="260" height="40" rx="10" class="node-store"/>
-      <text x="626" y="137" font-size="14" font-weight="700">시험지</text><text x="856" y="137" text-anchor="end" class="muted" font-size="11">학습 폴더/시험/</text>
+      <text x="626" y="137" font-size="14" font-weight="700">시험지</text><text x="856" y="137" text-anchor="end" class="muted" font-size="11">genius 폴더/시험/</text>
       <rect x="610" y="160" width="260" height="40" rx="10" class="node-store"/>
-      <text x="626" y="185" font-size="14" font-weight="700">해설지</text><text x="856" y="185" text-anchor="end" class="muted" font-size="11">시험지에 해설 작성</text>
+      <text x="626" y="185" font-size="14" font-weight="700">답안지 (숨김)</text><text x="856" y="185" text-anchor="end" class="muted" font-size="11">시험지와 함께 저장</text>
       <rect x="610" y="208" width="260" height="40" rx="10" class="node-store"/>
-      <text x="626" y="233" font-size="14" font-weight="700">오답노트</text><text x="856" y="233" text-anchor="end" class="muted" font-size="11">학습 폴더/오답/</text>
+      <text x="626" y="233" font-size="14" font-weight="700">해설지</text><text x="856" y="233" text-anchor="end" class="muted" font-size="11">시험지에 해설 작성</text>
       <rect x="610" y="256" width="260" height="40" rx="10" class="node-store"/>
-      <text x="626" y="281" font-size="14" font-weight="700">복습 시험지</text><text x="856" y="281" text-anchor="end" class="muted" font-size="11">학습 폴더/복습/</text>
+      <text x="626" y="281" font-size="14" font-weight="700">오답노트</text><text x="856" y="281" text-anchor="end" class="muted" font-size="11">genius 폴더/오답/</text>
+      <rect x="610" y="304" width="260" height="40" rx="10" class="node-store"/>
+      <text x="626" y="329" font-size="14" font-weight="700">복습 시험지 <tspan class="muted" font-size="11" font-weight="400">(1~3단계 반복)</tspan></text><text x="856" y="329" text-anchor="end" class="muted" font-size="11">genius 폴더/복습/</text>
 
       <!-- 여러 스킬이 함께 쓰는 곳 -->
-      <rect x="610" y="316" width="260" height="56" rx="10" class="node-store"/>
-      <text x="626" y="340" font-size="14" font-weight="700">학습 로그.md</text>
-      <text x="626" y="360" class="muted" font-size="11">grade · note · question이 갱신, review가 읽음</text>
+      <rect x="610" y="364" width="260" height="56" rx="10" class="node-store"/>
+      <text x="626" y="388" font-size="14" font-weight="700">학습 로그.md</text>
+      <text x="626" y="408" class="muted" font-size="11">grade · note · question이 갱신, review가 읽음</text>
 
-      <rect x="610" y="388" width="260" height="56" rx="10" class="node-store"/>
-      <text x="626" y="412" font-size="14" font-weight="700">정답 키 (숨김)</text>
-      <text x="626" y="432" class="muted" font-size="11">정답 키 ← test · review, 질문 기록 ← question · note</text>
-
-      <rect x="610" y="460" width="260" height="56" rx="10" class="node-store"/>
-      <text x="626" y="484" font-size="14" font-weight="700">노트 폴더</text>
-      <text x="626" y="504" class="muted" font-size="11">Obsidian · 출제 근거로 읽기만</text>
+      <rect x="610" y="436" width="260" height="56" rx="10" class="node-store"/>
+      <text x="626" y="460" font-size="14" font-weight="700">TIL</text>
+      <text x="626" y="480" class="muted" font-size="11">노트 폴더 · 오늘 알게 된 것, 시험 출제 근거</text>
 
       <!-- 플러그인 → 데이터 -->
       <path d="M530 62 H606" class="arrow-store" marker-end="url(#c-store)"/>
-      <path d="M530 132 H606" class="arrow-store" marker-end="url(#c-store)"/>
-      <path d="M530 180 H606" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 150 C568 150, 568 132, 606 132" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 162 C568 162, 568 180, 606 180" class="arrow-store" marker-end="url(#c-store)"/>
       <path d="M530 228 H606" class="arrow-store" marker-end="url(#c-store)"/>
       <path d="M530 276 H606" class="arrow-store" marker-end="url(#c-store)"/>
-      <path d="M530 434 C570 434, 575 344, 606 344" class="arrow-store" marker-end="url(#c-store)"/>
-      <path d="M530 460 C570 460, 575 416, 606 416" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 324 H606" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 482 C570 482, 575 392, 606 392" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 502 C570 502, 575 464, 606 464" class="arrow-store" marker-end="url(#c-store)"/>
 
     </svg>
     <div class="legend">
