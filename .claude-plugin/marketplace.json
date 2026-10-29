@@ -11,7 +11,7 @@
       "name": "genius",
       "source": "./plugins/genius",
       "description": "손글씨 PDF 시험(test)·채점(grade)·오답 정리(note)·간격 복습(review)과, 대화 중 개념 질문을 학습 로그와 TIL에 기록(question), 첫 설정(setup) 스킬 세트",
-      "version": "4.0.1"
+      "version": "4.0.2"
     },
     {
       "name": "todo",
