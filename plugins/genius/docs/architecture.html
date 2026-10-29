@@ -180,7 +180,7 @@ code {
   <h2>2. 상세</h2>
   <p>구조의 네 단계는 단계마다 스킬 하나(test, grade, note, review)가 맡고, 대화 중 질문은 question 스킬이 처리합니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고 <code>~/.claude/genius.json</code> 한 곳에서 읽습니다. 학습 로그 형식, 출제 원칙, 시험지 형식, 채점 기준처럼 여러 스킬이 함께 쓰는 규칙은 어느 스킬에도 두지 않고 <code>references/</code>에 한 곳씩 둡니다. 데이터는 노트 폴더와 genius 폴더 두 곳에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 답안지만 숨김 폴더에 둡니다.</p>
   <div class="card">
-    <svg viewBox="0 0 880 530" role="img" aria-label="플러그인 구조">
+    <svg viewBox="0 0 880 570" role="img" aria-label="플러그인 구조">
       <defs>
         <marker id="c-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-muted"/></marker>
         <marker id="c-store" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="mk-store"/></marker>
@@ -245,13 +245,13 @@ code {
       <text x="626" y="329" font-size="14" font-weight="700">복습 시험지 <tspan class="muted" font-size="11" font-weight="400">(1~3단계 반복)</tspan></text><text x="856" y="329" text-anchor="end" class="muted" font-size="11">genius 폴더/복습/</text>
 
       <!-- 여러 스킬이 함께 쓰는 곳 -->
-      <rect x="610" y="364" width="260" height="56" rx="10" class="node-store"/>
-      <text x="626" y="388" font-size="14" font-weight="700">학습 로그.md</text>
-      <text x="626" y="408" class="muted" font-size="11">grade · note · question이 갱신, review가 읽음</text>
+      <rect x="610" y="428" width="260" height="56" rx="10" class="node-store"/>
+      <text x="626" y="452" font-size="14" font-weight="700">학습 로그.md</text>
+      <text x="626" y="472" class="muted" font-size="11">grade · note · question이 갱신, review가 읽음</text>
 
-      <rect x="610" y="436" width="260" height="56" rx="10" class="node-store"/>
-      <text x="626" y="460" font-size="14" font-weight="700">TIL</text>
-      <text x="626" y="480" class="muted" font-size="11">노트 폴더 · 오늘 알게 된 것, 시험 출제 근거</text>
+      <rect x="610" y="500" width="260" height="56" rx="10" class="node-store"/>
+      <text x="626" y="524" font-size="14" font-weight="700">TIL</text>
+      <text x="626" y="544" class="muted" font-size="11">노트 폴더 · 오늘 알게 된 것, 시험 출제 근거</text>
 
       <!-- 플러그인 → 데이터 -->
       <path d="M530 62 H606" class="arrow-store" marker-end="url(#c-store)"/>
@@ -260,8 +260,8 @@ code {
       <path d="M530 228 H606" class="arrow-store" marker-end="url(#c-store)"/>
       <path d="M530 276 H606" class="arrow-store" marker-end="url(#c-store)"/>
       <path d="M530 324 H606" class="arrow-store" marker-end="url(#c-store)"/>
-      <path d="M530 482 C570 482, 575 392, 606 392" class="arrow-store" marker-end="url(#c-store)"/>
-      <path d="M530 502 C570 502, 575 464, 606 464" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 482 C570 482, 570 456, 606 456" class="arrow-store" marker-end="url(#c-store)"/>
+      <path d="M530 502 C570 502, 570 528, 606 528" class="arrow-store" marker-end="url(#c-store)"/>
 
     </svg>
     <div class="legend">
