@@ -1,6 +1,6 @@
 ---
 name: test
-description: 공부한 개념 노트로 손글씨용 PDF 시험지를 만들어 노트를 보지 않고 푸는 시험 스킬. 사전 테스트(pre)와 대화형 시험(chat)도 한다. 채점은 grade, 해설 확인과 오답노트는 note, 간격 복습은 review가 맡는다. 경로는 ~/.claude/genius.json, PDF 스크립트는 macOS 전용
+description: 공부한 개념 노트로 손글씨용 PDF 시험지를 만들어 노트를 보지 않고 푸는 시험 스킬. 사전 테스트(pre)와 대화형 시험(chat)도 한다. 채점은 grade, 해설 확인과 오답노트는 note, 간격 복습은 review가 맡는다. 경로는 플러그인 설정(userConfig), PDF 스크립트는 macOS 전용
 argument-hint: "[노트 이름 또는 경로] [pre] [chat]"
 disable-model-invocation: false
 ---
@@ -9,7 +9,8 @@ disable-model-invocation: false
 
 # 경로와 공용 규칙
 `<SKILL>`은 이 스킬의 기본 폴더, `<ROOT>`는 플러그인 루트(`<SKILL>/../..`)다.
-- 경로 설정과 학습 로그 형식: `<ROOT>/references/learning-log-format.md`. **설정 파일이 없으면** 시험을 시작하지 말고 `/genius:setup`을 먼저 실행하라고 안내한다.
+- 경로: `<NOTES>`는 `${user_config.notes_path}`, `<GENIUS>`는 `${user_config.genius_path}`다. 셸에서는 공백이 있을 수 있으므로 항상 따옴표로 감싼다. 폴더나 파일이 없으면 만든다.
+- 학습 로그 형식: `<ROOT>/references/learning-log-format.md`
 - 출제 원칙: `<ROOT>/references/exam-questions.md`
 - 시험지 경로·형식·PDF 변환: `<ROOT>/references/exam-sheet.md`
 - 대화형 채점: `<ROOT>/references/grading.md`

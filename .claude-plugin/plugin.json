@@ -1,8 +1,29 @@
 {
   "name": "genius",
-  "description": "손글씨 PDF 시험(test)·채점(grade)·오답 정리(note)·간격 복습(review)과, 대화 중 개념 질문을 학습 로그와 TIL에 기록(question), 첫 설정(setup) 스킬 세트",
-  "version": "4.0.2",
+  "description": "손글씨 PDF 시험(test)·채점(grade)·오답 정리(note)·간격 복습(review)과, 대화 중 개념 질문을 학습 로그와 TIL에 기록(question)하는 스킬 세트",
+  "version": "5.0.0",
   "author": {
     "name": "Kim Junyoung"
+  },
+  "userConfig": {
+    "notes_path": {
+      "type": "directory",
+      "title": "노트(TIL) 폴더",
+      "description": "question이 TIL(YYYY-MM-DD.md)을 쓰고 test가 문제를 내는 노트 폴더. 예: Obsidian vault 안의 TIL 폴더",
+      "required": true
+    },
+    "genius_path": {
+      "type": "directory",
+      "title": "genius 폴더",
+      "description": "학습 로그, 시험지·해설지·오답노트 PDF, 숨김 폴더 .답안지를 두는 곳. 태블릿에서도 열 수 있는 동기화 폴더 권장",
+      "required": true
+    },
+    "review_limit": {
+      "type": "number",
+      "title": "복습 문제 수",
+      "description": "/genius:review가 한 번에 내는 복습 문제 수",
+      "default": 15,
+      "min": 1
+    }
   }
 }

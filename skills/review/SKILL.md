@@ -1,6 +1,6 @@
 ---
 name: review
-description: 학습 로그에서 다음 복습일이 된 행만 골라 다른 각도로 다시 내는 간격 복습 시험 스킬. 기본은 손글씨용 PDF 복습 시험지, chat이면 대화형. 사용자가 "복습", "/genius:review"라고 하면 사용한다. 채점은 grade가 맡는다. 경로는 ~/.claude/genius.json, PDF 스크립트는 macOS 전용
+description: 학습 로그에서 다음 복습일이 된 행만 골라 다른 각도로 다시 내는 간격 복습 시험 스킬. 기본은 손글씨용 PDF 복습 시험지, chat이면 대화형. 사용자가 "복습", "/genius:review"라고 하면 사용한다. 채점은 grade가 맡는다. 경로는 플러그인 설정(userConfig), PDF 스크립트는 macOS 전용
 argument-hint: "[문제 수] [chat]"
 disable-model-invocation: false
 ---
@@ -9,7 +9,8 @@ disable-model-invocation: false
 
 # 경로와 공용 규칙
 `<SKILL>`은 이 스킬의 기본 폴더, `<ROOT>`는 플러그인 루트(`<SKILL>/../..`)다.
-- 경로 설정과 학습 로그 형식(단계와 간격): `<ROOT>/references/learning-log-format.md`. **설정 파일이 없으면** 진행하지 말고 `/genius:setup`을 먼저 실행하라고 안내한다.
+- 경로: `<NOTES>`는 `${user_config.notes_path}`, `<GENIUS>`는 `${user_config.genius_path}`다. 셸에서는 공백이 있을 수 있으므로 항상 따옴표로 감싼다. 폴더나 파일이 없으면 만든다.
+- 학습 로그 형식(단계와 간격): `<ROOT>/references/learning-log-format.md`
 - 출제 원칙: `<ROOT>/references/exam-questions.md`
 - 시험지 경로·형식·PDF 변환: `<ROOT>/references/exam-sheet.md`
 - 대화형 채점과 학습 로그 갱신: `<ROOT>/references/grading.md`
@@ -24,7 +25,7 @@ disable-model-invocation: false
 # 3. 복습할 행 고르기
 1. 학습 로그에서 **다음 복습일이 오늘 이하이고 졸업하지 않은 행**을 모은다. 없으면 "오늘 복습할 문제가 없다"고 알리고 끝낸다. 밀린 행도 함께 모은다.
 2. 해당 행이 가리키는 노트와 원래 답안지를 읽어 근거로 삼는다. 질문·이해 확인 행은 답안지 대신 TIL을 근거로 쓴다. `노트` 칸이 아니라 `<NOTES>`의 TIL 파일(`YYYY-MM-DD.md`) 전체에서 그 행의 `몰랐던 것`과 같은 `##` 제목을 찾는다(`grep -rlF "## <몰랐던 것>" "<NOTES>"`). 같은 개념을 여러 날 물었으면 여러 파일에 있으므로 모두 읽는다. `노트` 칸이 실제 노트를 가리키면 그 노트도 함께 근거로 쓴다. 노트에도 TIL에도 근거가 없는 행은 출제하지 말고 목록으로 알린다.
-3. **한 번에 낼 문제 수**: 인자의 숫자, 없으면 설정 파일의 `review_limit`, 그것도 없으면 15개. 같은 개념의 행은 묶어 한 문제로 세므로 행 수보다 문제 수가 적을 수 있다.
+3. **한 번에 낼 문제 수**: 인자의 숫자, 없으면 `${user_config.review_limit}`개(설정하지 않았으면 15개). 같은 개념의 행은 묶어 한 문제로 세므로 행 수보다 문제 수가 적을 수 있다.
 4. **넘치면 고르는 순서**: ① 원인이 `오개념`인 행 ② 복습일이 오래된 행 ③ 단계가 낮은 행. 못 낸 행은 복습일을 바꾸지 않고 두어 다음 복습에서 먼저 나오게 한다.
 5. 밀린 행이 상한의 두 배를 넘으면 시작 메시지에 밀린 개수를 알리고, 오늘 한 번 더 복습하거나 며칠 동안 새 노트 시험을 줄이라고 한 줄로 권한다.
 
