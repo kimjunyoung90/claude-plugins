@@ -178,7 +178,7 @@ code {
 
   <!-- 2. 상세 -->
   <h2>2. 상세</h2>
-  <p>구조의 네 단계는 단계마다 스킬 하나(test, grade, note, review)가 맡고, 대화 중 질문은 question 스킬이 처리합니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고, 플러그인을 켤 때 Claude Code가 물어 저장한 값(<code>userConfig</code>)을 씁니다. 학습 로그 형식, 출제 원칙, 시험지 형식, 채점 기준처럼 여러 스킬이 함께 쓰는 규칙은 어느 스킬에도 두지 않고 <code>references/</code>에 한 곳씩 둡니다. 데이터는 노트 폴더와 genius 폴더 두 곳에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 답안지만 숨김 폴더에 둡니다.</p>
+  <p>학습은 test, grade, note, review 4단계 스킬로 구성되며, 대화 중 질문한 내용은 question 스킬이 기록해 둡니다. 아래 그림은 각 스킬이 무엇을 만들고 어디에 쓰는지를 보여 줍니다.</p>
   <div class="card">
     <svg viewBox="0 0 880 570" role="img" aria-label="플러그인 구조">
       <defs>
