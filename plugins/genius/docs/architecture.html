@@ -178,7 +178,7 @@ code {
 
   <!-- 2. 상세 -->
   <h2>2. 상세</h2>
-  <p>구조의 네 단계는 단계마다 스킬 하나(test, grade, note, review)가 맡고, 대화 중 질문은 question 스킬이 처리합니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고 <code>~/.claude/genius.json</code> 한 곳에서 읽습니다. 학습 로그 형식, 출제 원칙, 시험지 형식, 채점 기준처럼 여러 스킬이 함께 쓰는 규칙은 어느 스킬에도 두지 않고 <code>references/</code>에 한 곳씩 둡니다. 데이터는 노트 폴더와 genius 폴더 두 곳에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 답안지만 숨김 폴더에 둡니다.</p>
+  <p>구조의 네 단계는 단계마다 스킬 하나(test, grade, note, review)가 맡고, 대화 중 질문은 question 스킬이 처리합니다. 여기서는 각 스킬이 어떤 데이터를 읽고 쓰는지 봅니다. 경로는 PC마다 다르므로 스킬에 쓰지 않고, 플러그인을 켤 때 Claude Code가 물어 저장한 값(<code>userConfig</code>)을 씁니다. 학습 로그 형식, 출제 원칙, 시험지 형식, 채점 기준처럼 여러 스킬이 함께 쓰는 규칙은 어느 스킬에도 두지 않고 <code>references/</code>에 한 곳씩 둡니다. 데이터는 노트 폴더와 genius 폴더 두 곳에 나뉘어 있고, 정답이 시험 전에 눈에 띄지 않도록 답안지만 숨김 폴더에 둡니다.</p>
   <div class="card">
     <svg viewBox="0 0 880 570" role="img" aria-label="플러그인 구조">
       <defs>
@@ -192,7 +192,7 @@ code {
 
       <!-- 사용자 -->
       <rect x="20" y="40" width="160" height="44" rx="8" class="node"/>
-      <text x="100" y="67" text-anchor="middle" font-size="14">초기 설정</text>
+      <text x="100" y="67" text-anchor="middle" font-size="14">경로 입력</text>
       <rect x="20" y="206" width="160" height="44" rx="8" class="node"/>
       <text x="100" y="233" text-anchor="middle" font-size="14">4단계</text>
       <rect x="20" y="384" width="160" height="44" rx="8" class="node"/>
@@ -200,7 +200,7 @@ code {
 
       <!-- 플러그인 -->
       <rect x="250" y="34" width="280" height="56" rx="10" class="node-accent"/>
-      <text x="270" y="67" font-size="14" font-weight="700">setup</text><text x="380" y="67" class="muted" font-size="12">초기 설정 · PC마다 한 번</text>
+      <text x="270" y="67" font-size="14" font-weight="700">userConfig</text><text x="380" y="67" class="muted" font-size="12">플러그인 켤 때 · /config</text>
 
       <rect x="250" y="136" width="280" height="40" rx="10" class="node-accent"/>
       <text x="270" y="161" font-size="14" font-weight="700">test</text><text x="380" y="161" class="muted" font-size="12">시험</text>
@@ -230,8 +230,8 @@ code {
 
       <!-- 데이터: 단계마다 산출물 -->
       <rect x="610" y="34" width="260" height="56" rx="10" class="node-store"/>
-      <text x="626" y="58" font-size="14" font-weight="700">genius.json</text>
-      <text x="626" y="78" class="muted" font-size="11">PC마다 다른 경로</text>
+      <text x="626" y="58" font-size="14" font-weight="700">settings.json</text>
+      <text x="626" y="78" class="muted" font-size="11">pluginConfigs · 노트 폴더, genius 폴더</text>
 
       <rect x="610" y="112" width="260" height="40" rx="10" class="node-store"/>
       <text x="626" y="137" font-size="14" font-weight="700">시험지</text><text x="856" y="137" text-anchor="end" class="muted" font-size="11">genius 폴더/시험/</text>

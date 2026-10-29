@@ -1,24 +1,12 @@
 # 학습 로그 형식
 
-genius의 모든 스킬이 따르는 경로 설정과 학습 로그 형식의 기준이다. 스킬 폴더(`<SKILL>`) 기준으로 `<SKILL>/../../references/learning-log-format.md`에 있다.
+genius의 모든 스킬이 따르는 학습 로그 형식의 기준이다. 스킬 폴더(`<SKILL>`) 기준으로 `<SKILL>/../../references/learning-log-format.md`에 있다.
 
-# 경로 설정
-경로는 PC마다 다르므로 스킬에 직접 쓰지 않고 **`~/.claude/genius.json`** 에서 읽는다.
-
-```json
-{
-  "notes_path": "노트 폴더. question이 TIL을 쓰고, test가 문제를 내는 곳. 예: Obsidian vault 안의 TIL 폴더",
-  "genius_path": "genius가 만드는 파일(학습 로그, 시험지 PDF, 답안지)을 두는 폴더. 여러 기기에서 열 수 있는 동기화 폴더 권장",
-  "review_limit": 15
-}
-```
-
-- `review_limit`은 `review` 스킬이 한 번에 내는 복습 문제 수다. 없으면 15로 본다.
-- 스킬에서 `<NOTES>`, `<GENIUS>`는 각각 `notes_path`, `genius_path`를 뜻한다. 예전 키(`notes_dir`, `study_dir`)만 있으면 그 값을 각각 `notes_path`, `genius_path`로 쓰고, `/genius:setup`으로 설정을 옮기라고 한 줄로 알린다. `~`는 `$HOME`으로 풀고, 경로에 공백이 있을 수 있으므로 셸에서는 항상 따옴표로 감싼다.
+# 파일 위치
+`<NOTES>`(노트 폴더)와 `<GENIUS>`(genius 폴더)는 플러그인 설정(`userConfig`)의 값이다. 각 스킬의 SKILL.md에 적혀 있다.
 - 학습 로그: `<GENIUS>/학습 로그.md`
 - 답안지: `<GENIUS>/.답안지/` (숨김 폴더. 시험 전에 답이 눈에 띄지 않게)
-- TIL(오늘 알게 된 것): `<NOTES>/YYYY-MM-DD.md`. 형식은 `question` 스킬
-- **설정 파일이 없으면** 기록하지 말고 `/genius:setup`을 먼저 실행하라고 한 줄로 안내한다.
+- TIL(오늘 알게 된 것): `<NOTES>/YYYY-MM-DD.md`. 형식은 `references/til-format.md`
 
 # 표 형식
 `<GENIUS>/학습 로그.md`가 없으면 아래 헤더로 만든다. 열은 12개다.

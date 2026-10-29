@@ -6,12 +6,11 @@
 
 | 구성 | 하는 일 |
 |---|---|
-| `setup` 스킬 | 처음 쓰는 PC에서 환경 점검, 경로 설정, 노트 폴더·genius 폴더 준비, 예전 방식으로 깔린 스킬과의 중복 점검 |
 | `test` 스킬 | 노트로 손글씨용 PDF 시험지 만들기, 사전 테스트(`pre`), 대화형 시험(`chat`) |
 | `grade` 스킬 | 손글씨로 푼 시험지 채점, 문제마다 해설이 붙은 해설지 만들기, 학습 로그 기록 |
 | `note` 스킬 | 해설을 읽으며 적은 질문·이해 확인과 오답노트 만들기, 다 쓴 오답노트를 학습 로그로 옮기기(`save`) |
 | `review` 스킬 | 복습일이 된 행만 골라 다른 각도로 다시 내는 복습 시험지 만들기 |
-| `question` 스킬 | Claude Code를 쓰다가 한 개념 질문, 자기 말 요약, 틀린 이해를 학습 로그에 기록 |
+| `question` 스킬 | Claude Code를 쓰다가 한 개념 질문, 자기 말 요약, 틀린 이해를 학습 로그에, 알게 된 내용을 TIL에 기록 |
 | `UserPromptSubmit` hook | 질문이나 요약처럼 보이는 메시지마다 question 스킬을 쓰라는 알림을 컨텍스트에 넣음 (`/`로 시작하는 명령은 건너뜀) |
 
 ## 요구 사항
@@ -30,23 +29,13 @@
 
 ## 경로 설정
 
-설치한 뒤 `/genius:setup`을 한 번 실행합니다. PC마다 다른 경로는 `~/.claude/genius.json` 한 곳에만 두고, setup이 물어보고 만듭니다.
+플러그인을 켤 때 Claude Code가 아래 값을 물어봅니다. 나중에는 `/config`에서 바꿉니다. 폴더와 학습 로그는 스킬이 처음 쓸 때 만듭니다.
 
-```json
-{
-  "notes_path": "~/path/to/notes/TIL",
-  "genius_path": "~/path/to/genius",
-  "review_limit": 15
-}
-```
-
-| 키 | 내용 |
+| 설정 | 내용 |
 |---|---|
 | `notes_path` | TIL(오늘 알게 된 것)이 쌓이고 시험 문제가 나오는 노트 폴더. 예: Obsidian vault 안의 TIL 폴더 |
 | `genius_path` | `학습 로그.md`, `시험/`, `복습/`, `오답/` PDF 폴더와 숨김 폴더 `.답안지/`. 여러 기기에서 열 수 있는 동기화 폴더 권장 |
-| `review_limit` | 복습 시험 한 번에 낼 문제 수. 생략하면 15 |
-
-예전 이름(study-kit)으로 쓰던 PC는 `/genius:setup`을 실행하면 `~/.claude/study-kit.json`을 `~/.claude/genius.json`으로 복사합니다.
+| `review_limit` | 복습 시험 한 번에 낼 문제 수. 기본 15 |
 
 ## 하루 흐름
 

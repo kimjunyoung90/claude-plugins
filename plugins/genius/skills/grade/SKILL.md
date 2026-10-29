@@ -1,6 +1,6 @@
 ---
 name: grade
-description: 손글씨로 푼 시험지(새 시험·복습 시험) PDF를 읽어 채점하고, 문제마다 해설을 붙인 해설지를 만든 뒤 학습 로그에 기록하는 스킬. 오답노트는 note가 만든다. 사용자가 "채점", "/genius:grade", "다 풀었어"라고 하면 사용한다. 경로는 ~/.claude/genius.json, PDF 스크립트는 macOS 전용
+description: 손글씨로 푼 시험지(새 시험·복습 시험) PDF를 읽어 채점하고, 문제마다 해설을 붙인 해설지를 만든 뒤 학습 로그에 기록하는 스킬. 오답노트는 note가 만든다. 사용자가 "채점", "/genius:grade", "다 풀었어"라고 하면 사용한다. 경로는 플러그인 설정(userConfig), PDF 스크립트는 macOS 전용
 argument-hint: "[푼 시험지 파일]"
 disable-model-invocation: false
 ---
@@ -9,7 +9,8 @@ disable-model-invocation: false
 
 # 경로와 공용 규칙
 `<SKILL>`은 이 스킬의 기본 폴더, `<ROOT>`는 플러그인 루트(`<SKILL>/../..`)다.
-- 경로 설정과 학습 로그 형식: `<ROOT>/references/learning-log-format.md`. **설정 파일이 없으면** 채점하지 말고 `/genius:setup`을 먼저 실행하라고 안내한다.
+- 경로: `<NOTES>`는 `${user_config.notes_path}`, `<GENIUS>`는 `${user_config.genius_path}`다. 셸에서는 공백이 있을 수 있으므로 항상 따옴표로 감싼다. 폴더나 파일이 없으면 만든다.
+- 학습 로그 형식: `<ROOT>/references/learning-log-format.md`
 - 채점 기준(판정, 해설, 답 표시, 결과 요약, 학습 로그 기록·갱신): `<ROOT>/references/grading.md`
 - 시험지·답안지 경로: `<ROOT>/references/exam-sheet.md`
 
