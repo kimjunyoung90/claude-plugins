@@ -1,10 +1,10 @@
 ---
 name: finish
 description: 티켓 작업을 완료 처리한다 — 작업 내용 정리, 지라 작업 내역 기록, 할 일 done(지라 티켓은 자동으로 완료). 사용자가 결과를 확인하고 "완료", "끝났어", "완료 처리해줘"라고 할 때 사용. "N번 처리"·"N번 시작"은 /start 다.
-argument-hint: "[티켓 키]"
+argument-hint: "[할 일 번호 | 티켓 키]"
 ---
 
-대상 티켓: `$ARGUMENTS`. 비어 있으면 `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ticket_link.py" status` 로 이 세션에 연결된 티켓을 확인하고, 연결이 없으면 묻는다.
+대상 티켓: `$ARGUMENTS` — 할 일 번호 또는 티켓 키. 번호면 `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/todo.py" todo` 에서 그 번호의 `[KEY]` 를 읽어 티켓 키로 바꾼 뒤 아래 단계를 진행한다(티켓이 없는 할 일이면 알리고 멈춘다). 비어 있으면 `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ticket_link.py" status` 로 이 세션에 연결된 티켓을 확인하고, 연결이 없으면 묻는다.
 
 이 세션을 티켓에 직접 연결(`bind`)하지 않는다. 작업 내역은 그 티켓에 연결된 세션들의 기록으로 만든다 — `/start` 로 맡긴 작업 세션이 있으면 그 세션 시간만 들어가고, 지휘 세션에서 `/finish` 를 불러도 지휘 세션 시간은 섞이지 않는다. 연결된 세션이 하나도 없으면(직접 작업한 경우) 스크립트가 지금 세션을 연결해 기록한다.
 
