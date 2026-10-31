@@ -1,10 +1,10 @@
 ---
 name: start
 description: 할 일 목록의 건마다 그 일을 맡을 작업 세션을 새 워크트리에 띄우고, 할 일을 작업 중(in_progress)으로 바꾼다(지라 티켓은 자동으로 진행 중). /start 를 Orca 안에서 부르면 Orca 사이드바에, 일반 터미널에서 부르면 Claude Code 백그라운드 세션(agent view)으로 띄운다. "/start 1, 2, 3", "N번 처리", "N번 시작" 요청 시 사용. 티켓은 할 일을 추가할 때(/todo:add) 이미 붙어 있다. 완료는 /finish.
-argument-hint: "<할 일 번호> [, <번호> ...]"
+argument-hint: "[할 일 번호 | 티켓 키]"
 ---
 
-대상: `$ARGUMENTS` — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/todo.py" todo` 의 번호. 여러 개면 건마다 아래를 한다.
+대상: `$ARGUMENTS` — `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/todo.py" todo` 의 번호 또는 티켓 키(쉼표로 여러 개, 섞어 써도 된다). 여러 개면 건마다 아래를 한다. 아래 `<번호>` 자리에는 받은 값을 그대로 넣는다 — 스크립트가 번호·티켓 키를 모두 받는다.
 명령: `todo.py` = `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/todo.py"`, `launch.py` = `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/launch.py"`.
 
 ## 1. 대상 확인
