@@ -164,7 +164,7 @@ code {
       <!-- 시험 밖 질문 -->
       <rect x="290" y="330" width="300" height="64" rx="10" class="node"/>
       <text x="440" y="357" text-anchor="middle" font-size="15" font-weight="700">Claude 대화 중 개념 질문</text>
-      <text x="440" y="379" text-anchor="middle" class="muted" font-size="13">hook 알림 → /genius:question</text>
+      <text x="440" y="379" text-anchor="middle" class="muted" font-size="13">hook 알림 → question agent</text>
       <path d="M440 330 V288" class="arrow" marker-end="url(#a-muted)"/>
     </svg>
   </div>
@@ -178,7 +178,7 @@ code {
 
   <!-- 2. 상세 -->
   <h2>2. 상세</h2>
-  <p>학습은 test, grade, note, review 4단계 스킬로 구성되며, 대화 중 질문한 내용은 question 스킬이 기록해 둡니다. 아래 그림은 각 스킬이 무엇을 만들고 어디에 쓰는지를 보여 줍니다.</p>
+  <p>학습은 test, grade, note, review 4단계 스킬로 구성되며, 대화 중 질문한 내용은 question agent가 기록해 둡니다. 아래 그림은 각 스킬과 agent가 무엇을 만들고 어디에 쓰는지를 보여 줍니다.</p>
   <div class="card">
     <svg viewBox="0 0 880 570" role="img" aria-label="플러그인 구조">
       <defs>
@@ -213,10 +213,10 @@ code {
 
       <rect x="250" y="384" width="190" height="44" rx="10" class="node"/>
       <text x="345" y="403" text-anchor="middle" font-size="14" font-weight="700">UserPromptSubmit hook</text>
-      <text x="345" y="420" text-anchor="middle" class="muted" font-size="11">알림만 붙이고 기록은 question이</text>
+      <text x="345" y="420" text-anchor="middle" class="muted" font-size="11">알림만 붙이고 기록은 question agent가</text>
 
       <rect x="250" y="462" width="280" height="60" rx="10" class="node-accent"/>
-      <text x="270" y="487" font-size="15" font-weight="700">question</text>
+      <text x="270" y="487" font-size="15" font-weight="700">question agent</text>
       <text x="270" y="508" class="muted" font-size="12">대화 중 질문 · 자기 말 요약 · 틀린 이해 기록</text>
 
       <!-- 사용자 → 플러그인 -->
