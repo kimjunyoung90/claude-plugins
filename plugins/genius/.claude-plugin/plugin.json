@@ -1,7 +1,7 @@
 {
   "name": "genius",
   "description": "손글씨 PDF 시험(test)·채점(grade)·오답 정리(note)·간격 복습(review)과, 대화 중 개념 질문을 학습 로그와 TIL에 기록(question agent)하는 스킬 세트",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "author": {
     "name": "Kim Junyoung"
   },
