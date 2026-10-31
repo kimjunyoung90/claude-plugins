@@ -1,9 +1,9 @@
 # 학습 로그 형식
 
-genius의 모든 스킬이 따르는 학습 로그 형식의 기준이다. 스킬 폴더(`<SKILL>`) 기준으로 `<SKILL>/../../references/learning-log-format.md`에 있다.
+genius의 모든 스킬과 agent가 따르는 학습 로그 형식의 기준이다. 스킬 폴더(`<SKILL>`) 기준으로 `<SKILL>/../../references/learning-log-format.md`에 있다.
 
 # 파일 위치
-`<NOTES>`(노트 폴더)와 `<GENIUS>`(genius 폴더)는 플러그인 설정(`userConfig`)의 값이다. 각 스킬의 SKILL.md에 적혀 있다.
+`<NOTES>`(노트 폴더)와 `<GENIUS>`(genius 폴더)는 플러그인 설정(`userConfig`)의 값이다. 스킬은 SKILL.md에 적혀 있고, `question` agent는 호출 프롬프트로 받는다.
 - 학습 로그: `<GENIUS>/학습 로그.md`
 - 답안지: `<GENIUS>/.답안지/` (숨김 폴더. 시험 전에 답이 눈에 띄지 않게)
 - TIL(오늘 알게 된 것): `<NOTES>/YYYY-MM-DD.md`. 형식은 `references/til-format.md`
