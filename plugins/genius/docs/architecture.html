@@ -272,7 +272,7 @@ code {
 
   <!-- 3. 복습 메커니즘 -->
   <h2>3. 복습 메커니즘</h2>
-  <p>학습 로그의 행 하나가 졸업할 때까지 걷는 길입니다. 맞힐 때마다 간격이 늘어나고, 틀리면 처음으로 돌아갑니다. 6·7단계는 오래 묵은 지식을 가끔 꺼내 유지하는 단계입니다.</p>
+  <p>학습 로그의 행 하나가 졸업할 때까지 걷는 길입니다. 맞힐 때마다 간격이 늘어나고, 틀리면 처음으로 돌아갑니다. 대화 중 남긴 질문은 새 질문 시험을 본 뒤에 이 길로 들어옵니다.</p>
   <div class="card">
     <svg viewBox="0 0 880 250" role="img" aria-label="복습 단계 전이">
       <defs>
@@ -282,36 +282,28 @@ code {
       </defs>
 
       <!-- 시작 -->
-      <text x="65" y="40" text-anchor="middle" class="muted" font-size="12">그 밖의 모든 행</text>
-      <path d="M65 46 V76" class="arrow" marker-end="url(#b-muted)"/>
-      <text x="285" y="40" text-anchor="middle" class="muted" font-size="12">확신 정답</text>
-      <path d="M285 46 V76" class="arrow" marker-end="url(#b-muted)"/>
+      <text x="165" y="40" text-anchor="middle" class="muted" font-size="12">그 밖의 모든 행</text>
+      <path d="M165 46 V76" class="arrow" marker-end="url(#b-muted)"/>
+      <text x="365" y="40" text-anchor="middle" class="muted" font-size="12">확신 정답</text>
+      <path d="M365 46 V76" class="arrow" marker-end="url(#b-muted)"/>
 
       <!-- 단계 -->
       <g font-size="14" text-anchor="middle">
-        <rect x="20"  y="80" width="90" height="60" rx="8" class="node-accent"/><text x="65"  y="105" font-weight="700">1단계</text><text x="65"  y="126" class="muted" font-size="12">1일 뒤</text>
-        <rect x="130" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="175" y="105" font-weight="700">2단계</text><text x="175" y="126" class="muted" font-size="12">3일 뒤</text>
-        <rect x="240" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="285" y="105" font-weight="700">3단계</text><text x="285" y="126" class="muted" font-size="12">7일 뒤</text>
-        <rect x="350" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="395" y="105" font-weight="700">4단계</text><text x="395" y="126" class="muted" font-size="12">14일 뒤</text>
-        <rect x="460" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="505" y="105" font-weight="700">5단계</text><text x="505" y="126" class="muted" font-size="12">30일 뒤</text>
-        <rect x="570" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="615" y="105" font-weight="700">6단계</text><text x="615" y="126" class="muted" font-size="12">90일 뒤</text>
-        <rect x="680" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="725" y="105" font-weight="700">7단계</text><text x="725" y="126" class="muted" font-size="12">180일 뒤</text>
-        <rect x="790" y="80" width="80" height="60" rx="8" class="node-ok"/><text x="830" y="115" font-weight="700">졸업</text>
+        <rect x="120" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="165" y="105" font-weight="700">1단계</text><text x="165" y="126" class="muted" font-size="12">3일 뒤</text>
+        <rect x="320" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="365" y="105" font-weight="700">2단계</text><text x="365" y="126" class="muted" font-size="12">14일 뒤</text>
+        <rect x="520" y="80" width="90" height="60" rx="8" class="node-accent"/><text x="565" y="105" font-weight="700">3단계</text><text x="565" y="126" class="muted" font-size="12">60일 뒤</text>
+        <rect x="720" y="80" width="80" height="60" rx="8" class="node-ok"/><text x="760" y="115" font-weight="700">졸업</text>
       </g>
       <g class="arrow-accent">
-        <path d="M110 110 H126" marker-end="url(#b-accent)"/>
-        <path d="M220 110 H236" marker-end="url(#b-accent)"/>
-        <path d="M330 110 H346" marker-end="url(#b-accent)"/>
-        <path d="M440 110 H456" marker-end="url(#b-accent)"/>
-        <path d="M550 110 H566" marker-end="url(#b-accent)"/>
-        <path d="M660 110 H676" marker-end="url(#b-accent)"/>
-        <path d="M770 110 H786" marker-end="url(#b-accent)"/>
+        <path d="M210 110 H316" marker-end="url(#b-accent)"/>
+        <path d="M410 110 H516" marker-end="url(#b-accent)"/>
+        <path d="M610 110 H716" marker-end="url(#b-accent)"/>
       </g>
 
       <!-- 오답이면 1로 -->
-      <path d="M725 140 C725 215, 65 215, 65 144" class="arrow-warn" marker-end="url(#b-warn)"/>
-      <path d="M395 140 C395 180, 90 180, 75 146" class="arrow-warn"/>
-      <text x="440" y="236" text-anchor="middle" class="muted" font-size="13">부분 정답이면 단계 그대로 1일 뒤</text>
+      <path d="M565 140 C565 215, 165 215, 165 144" class="arrow-warn" marker-end="url(#b-warn)"/>
+      <path d="M365 140 C365 175, 190 175, 175 146" class="arrow-warn"/>
+      <text x="440" y="236" text-anchor="middle" class="muted" font-size="13">부분 정답이면 단계 그대로 3일 뒤</text>
     </svg>
     <div class="legend">
       <span class="l-accent">정답: 다음 단계로</span>
