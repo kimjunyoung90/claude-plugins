@@ -10,7 +10,7 @@
 | `grade` 스킬 | 손글씨로 푼 시험지 채점, 문제마다 해설이 붙은 해설지 만들기, 학습 로그 기록 |
 | `note` 스킬 | 해설을 읽으며 적은 질문·이해 확인과 오답노트 만들기, 다 쓴 오답노트를 학습 로그로 옮기기(`save`) |
 | `review` 스킬 | 복습일이 된 행만 골라 다른 각도로 다시 내는 복습 시험지 만들기 |
-| `feedback` 스킬 | 플러그인에 대한 문제·제안을 GitHub Issue 양식에 맞게 정리해 작성 화면을 열어 줌 |
+| `feedback` 스킬 | 플러그인에 대한 문제·제안을 GitHub Issue 양식에 맞게 정리해, 확인 한 번 받고 바로 등록 |
 | `question` agent | Claude Code를 쓰다가 한 개념 질문, 자기 말 요약, 틀린 이해를 학습 로그에, 알게 된 내용을 TIL에 기록 |
 | `UserPromptSubmit` hook | 질문이나 요약처럼 보이는 메시지마다 question agent를 부르라는 알림과 경로를 컨텍스트에 넣음 (`/`로 시작하는 명령은 건너뜀) |
 
@@ -50,6 +50,6 @@
 
 ## 피드백 보내기
 
-쓰다가 이상하거나 불편한 점이 있으면 `/genius:feedback <내용>`을 실행합니다. 내용을 문제 신고나 개선 제안 양식에 맞게 정리하고, 노트·답안·학습 로그 내용은 뺀 채로 GitHub Issue 작성 화면을 브라우저에 열어 줍니다. 내용을 확인하고 직접 제출하면 됩니다(GitHub 계정 필요). [Issues](https://github.com/kimjunyoung90/genius/issues/new/choose)에서 바로 써도 됩니다.
+쓰다가 이상하거나 불편한 점이 있으면 `/genius:feedback <내용>`을 실행합니다. 내용을 문제 신고나 개선 제안 양식에 맞게 정리하고, 노트·답안·학습 로그 내용은 뺀 초안을 보여 줍니다. 확인하면 [GitHub CLI](https://cli.github.com)(`gh`) 로그인 계정으로 Issue를 바로 등록합니다. `gh`가 없으면 내용이 채워진 Issue 작성 화면을 브라우저에 열어 주니, 직접 제출하면 됩니다(GitHub 계정 필요). [Issues](https://github.com/kimjunyoung90/genius/issues/new/choose)에서 바로 써도 됩니다.
 
 채점이 틀렸다는 것처럼 내 기록을 고칠 일은 Issue로 보내지 않고 그 자리에서 학습 로그를 고칩니다.
